@@ -22,7 +22,7 @@ namespace ApuntesEmpleados.DAL.BD
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@IdEmpleado", IdEmpleado);
-                    cmd.Parameters.AddWithValue("@Origen", "Zarcereño");
+                    cmd.Parameters.AddWithValue("@Origen", "Restaurante");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
@@ -60,8 +60,8 @@ namespace ApuntesEmpleados.DAL.BD
                         cmd.CommandType = CommandType.StoredProcedure;
 
                         cmd.Parameters.AddWithValue("@IdApunte", idApunte);
-                        cmd.Parameters.AddWithValue("@Origen", "Zarcereño");
-                        cmd.Parameters.AddWithValue("@SePagoEn", "Zarcereño");
+                        cmd.Parameters.AddWithValue("@Origen", "Restaurante");
+                        cmd.Parameters.AddWithValue("@SePagoEn", "Restaurante");
 
                         cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                         cmd.Parameters.Add("Mensaje", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;

@@ -22,7 +22,7 @@ namespace ApuntesEmpleados.DAL.BD
                     try
                     {
                         conn.Open();
-                        cmd.Parameters.AddWithValue("@Origen", "Zarcereño");
+                        cmd.Parameters.AddWithValue("@Origen", "Restaurante");
                         using (SqlDataReader reader = cmd.ExecuteReader())
                         {
                             while (reader.Read())

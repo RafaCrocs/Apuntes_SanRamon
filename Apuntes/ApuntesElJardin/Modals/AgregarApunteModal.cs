@@ -51,7 +51,7 @@ namespace ApuntesElJardin.Modals
                     {
                         nuevoApunte = new Apunte()
                         {
-                            Origen = "Zarcereño",
+                            Origen = "Restaurante",
                             IdEmpleado = codigos[i],
                             Monto = int.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out int monto) ? monto : 0,
                             Detalle = txtDetalle.Text,
@@ -62,7 +62,7 @@ namespace ApuntesElJardin.Modals
                     {
                         nuevoApunte = new Apunte()
                         {
-                            Origen = "Zarcereño",
+                            Origen = "Restaurante",
                             IdEmpleado = codigos[i],
                             Monto = int.TryParse(lblCadaUno.Text.Replace("C/U: ", ""), NumberStyles.Currency, new CultureInfo("es-CR"), out int monto) ? monto : 0,
                             Detalle = txtDetalle.Text,

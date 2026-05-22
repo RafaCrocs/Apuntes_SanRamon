@@ -204,7 +204,7 @@
             MaximizeBox = false;
             Name = "AgregarApunteModal";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Apuntes Zarcereño  v1.1.0";
+            Text = "Apuntes Restaurante  v1.1.0";
             ResumeLayout(false);
             PerformLayout();
         }
