@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="ApuntesTodos.BL/ApuntesTodos.BL.csproj" />
+  <Project Path="ApuntesTodos.DAL/ApuntesTodos.DAL.csproj" />
+  <Project Path="ApuntesTodos.Entities/ApuntesTodos.Entities.csproj" />
+  <Project Path="ApuntesTodos/ApuntesTodos.csproj" />
+</Solution>
