@@ -7,6 +7,6 @@ namespace ApuntesTodos.DAL
     public class Conexion
     {
 
-        public static string Cadena = "server=localhost; database=Apuntes_SanRamon3; integrated security=true";
+        public static string Cadena = "server=10.0.0.75,49172; database=Apuntes_SanRamon; Integrated Security=false; user=sa; password=aura0205.; TrustServerCertificate=True;";
     }
 }
