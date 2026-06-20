@@ -36,10 +36,6 @@
             txtNombre = new TextBox();
             lblBuscarNombre = new Label();
             gridHistorial = new DataGridView();
-            iconButton1 = new FontAwesome.Sharp.IconButton();
-            label4 = new Label();
-            dateTimePicker2 = new DateTimePicker();
-            btnBuscarFechas = new Button();
             IdHistorialPago = new DataGridViewTextBoxColumn();
             NombreCompleto = new DataGridViewTextBoxColumn();
             Monto = new DataGridViewTextBoxColumn();
@@ -47,6 +43,12 @@
             Origen = new DataGridViewTextBoxColumn();
             SePagoEn = new DataGridViewTextBoxColumn();
             Fecha = new DataGridViewTextBoxColumn();
+            iconButton1 = new FontAwesome.Sharp.IconButton();
+            label4 = new Label();
+            dateTimePicker2 = new DateTimePicker();
+            btnBuscarFechas = new Button();
+            lblTotal = new Label();
+            btnLimpiarFecha = new Button();
             ((System.ComponentModel.ISupportInitialize)gridHistorial).BeginInit();
             SuspendLayout();
             // 
@@ -132,52 +134,6 @@
             gridHistorial.TabIndex = 24;
             gridHistorial.CellFormatting += gridHistorial_CellFormatting;
             // 
-            // iconButton1
-            // 
-            iconButton1.BackColor = Color.FromArgb(255, 192, 192);
-            iconButton1.Font = new Font("Segoe UI", 25F);
-            iconButton1.IconChar = FontAwesome.Sharp.IconChar.X;
-            iconButton1.IconColor = Color.Black;
-            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            iconButton1.ImageAlign = ContentAlignment.BottomCenter;
-            iconButton1.Location = new Point(1003, 37);
-            iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(68, 62);
-            iconButton1.TabIndex = 30;
-            iconButton1.TextAlign = ContentAlignment.TopCenter;
-            iconButton1.UseVisualStyleBackColor = false;
-            iconButton1.Click += iconButton1_Click;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Font = new Font("Segoe UI", 18F);
-            label4.Location = new Point(481, 197);
-            label4.Name = "label4";
-            label4.Size = new Size(26, 32);
-            label4.TabIndex = 31;
-            label4.Text = "a";
-            // 
-            // dateTimePicker2
-            // 
-            dateTimePicker2.Font = new Font("Segoe UI", 18F);
-            dateTimePicker2.Format = DateTimePickerFormat.Short;
-            dateTimePicker2.Location = new Point(513, 192);
-            dateTimePicker2.Name = "dateTimePicker2";
-            dateTimePicker2.Size = new Size(161, 39);
-            dateTimePicker2.TabIndex = 32;
-            // 
-            // btnBuscarFechas
-            // 
-            btnBuscarFechas.BackColor = Color.FromArgb(224, 224, 224);
-            btnBuscarFechas.Location = new Point(680, 193);
-            btnBuscarFechas.Name = "btnBuscarFechas";
-            btnBuscarFechas.Size = new Size(74, 36);
-            btnBuscarFechas.TabIndex = 33;
-            btnBuscarFechas.Text = "BUSCAR";
-            btnBuscarFechas.UseVisualStyleBackColor = false;
-            btnBuscarFechas.Click += btnBuscarFechas_Click;
-            // 
             // IdHistorialPago
             // 
             IdHistorialPago.DataPropertyName = "IdHistorialPago";
@@ -239,12 +195,80 @@
             Fecha.ReadOnly = true;
             Fecha.Width = 150;
             // 
+            // iconButton1
+            // 
+            iconButton1.BackColor = Color.FromArgb(255, 192, 192);
+            iconButton1.Font = new Font("Segoe UI", 25F);
+            iconButton1.IconChar = FontAwesome.Sharp.IconChar.X;
+            iconButton1.IconColor = Color.Black;
+            iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            iconButton1.ImageAlign = ContentAlignment.BottomCenter;
+            iconButton1.Location = new Point(1003, 37);
+            iconButton1.Name = "iconButton1";
+            iconButton1.Size = new Size(68, 62);
+            iconButton1.TabIndex = 30;
+            iconButton1.TextAlign = ContentAlignment.TopCenter;
+            iconButton1.UseVisualStyleBackColor = false;
+            iconButton1.Click += iconButton1_Click;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Font = new Font("Segoe UI", 18F);
+            label4.Location = new Point(481, 197);
+            label4.Name = "label4";
+            label4.Size = new Size(26, 32);
+            label4.TabIndex = 31;
+            label4.Text = "a";
+            // 
+            // dateTimePicker2
+            // 
+            dateTimePicker2.Font = new Font("Segoe UI", 18F);
+            dateTimePicker2.Format = DateTimePickerFormat.Short;
+            dateTimePicker2.Location = new Point(513, 192);
+            dateTimePicker2.Name = "dateTimePicker2";
+            dateTimePicker2.Size = new Size(161, 39);
+            dateTimePicker2.TabIndex = 32;
+            // 
+            // btnBuscarFechas
+            // 
+            btnBuscarFechas.BackColor = Color.FromArgb(224, 224, 224);
+            btnBuscarFechas.Location = new Point(680, 193);
+            btnBuscarFechas.Name = "btnBuscarFechas";
+            btnBuscarFechas.Size = new Size(74, 36);
+            btnBuscarFechas.TabIndex = 33;
+            btnBuscarFechas.Text = "BUSCAR";
+            btnBuscarFechas.UseVisualStyleBackColor = false;
+            btnBuscarFechas.Click += btnBuscarFechas_Click;
+            // 
+            // lblTotal
+            // 
+            lblTotal.AutoSize = true;
+            lblTotal.Font = new Font("Segoe UI", 18F);
+            lblTotal.Location = new Point(55, 652);
+            lblTotal.Name = "lblTotal";
+            lblTotal.Size = new Size(0, 32);
+            lblTotal.TabIndex = 35;
+            // 
+            // btnLimpiarFecha
+            // 
+            btnLimpiarFecha.BackColor = Color.FromArgb(224, 224, 224);
+            btnLimpiarFecha.Location = new Point(760, 193);
+            btnLimpiarFecha.Name = "btnLimpiarFecha";
+            btnLimpiarFecha.Size = new Size(79, 36);
+            btnLimpiarFecha.TabIndex = 36;
+            btnLimpiarFecha.Text = "LIMPIAR";
+            btnLimpiarFecha.UseVisualStyleBackColor = false;
+            btnLimpiarFecha.Click += btnLimpiarFecha_Click;
+            // 
             // frmHistorial
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.InactiveCaption;
             ClientSize = new Size(1097, 704);
+            Controls.Add(btnLimpiarFecha);
+            Controls.Add(lblTotal);
             Controls.Add(btnBuscarFechas);
             Controls.Add(dateTimePicker2);
             Controls.Add(label4);
@@ -285,5 +309,7 @@
         private DataGridViewTextBoxColumn Origen;
         private DataGridViewTextBoxColumn SePagoEn;
         private DataGridViewTextBoxColumn Fecha;
+        private Label lblTotal;
+        private Button btnLimpiarFecha;
     }
 }

@@ -22,8 +22,12 @@ namespace ApuntesTodos
 
         private void CargarGrid()
         {
+            gridHistorial.RowsDefaultCellStyle.BackColor = Color.LightBlue;
+            gridHistorial.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
+            gridHistorial.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+
+
             listaHistorial = historialBL.ObtenerHistorial();
-            gridHistorial.DataSource = null;
             gridHistorial.DataSource = listaHistorial;
         }
         private void frmHistorial_Load(object sender, EventArgs e)
@@ -61,10 +65,45 @@ namespace ApuntesTodos
 
         private void btnBuscarFechas_Click(object sender, EventArgs e)
         {
-            DateTime fechaInicio = dateTimePicker1.Value;
-            DateTime fechaFin = dateTimePicker2.Value;
+            DateTime fechaInicio = dateTimePicker1.Value.Date;
+            DateTime fechaFin = dateTimePicker2.Value.Date.AddDays(1);
             var listaFiltrada = historialBL.BuscarEntreFechas(fechaInicio, fechaFin);
-            gridHistorial.DataSource = listaFiltrada;
+            if (txtNombre.Text.Length >= 3)
+            {
+                listaFiltrada = listaFiltrada.FindAll(h => h.NombreCompleto.ToLower().Contains(txtNombre.Text.ToLower()));
+                gridHistorial.DataSource = listaFiltrada;
+            }
+            else
+            {
+                gridHistorial.DataSource = listaFiltrada;
+            }
+            //Total en tabla
+            decimal total = 0;
+            foreach (var item in listaFiltrada)
+            {
+                total += item.Monto;
+            }
+            lblTotal.Text = "Total en tabla: " + total.ToString("C0", new System.Globalization.CultureInfo("es-CR"));
+        }
+
+        private void btnLimpiarFecha_Click(object sender, EventArgs e)
+        {
+            dateTimePicker1.Value = DateTime.Now;
+            dateTimePicker2.Value = DateTime.Now;
+            if (txtNombre.Text.Length >= 3)
+            {
+                var ListaFiltrada = listaHistorial.FindAll(h => h.NombreCompleto.ToLower().Contains(txtNombre.Text.ToLower()));
+                gridHistorial.DataSource = ListaFiltrada;
+
+
+            }
+            else
+            {
+                gridHistorial.DataSource = listaHistorial;
+            }
+            lblTotal.Text = "";
+            txtNombre.Text = "";
+            CargarGrid();
         }
     }
 }
