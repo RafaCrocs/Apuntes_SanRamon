@@ -31,7 +31,7 @@ namespace ApuntesElJardin.Forms
 
         private void CargarCombos()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Zarcereño", "Restaurante", "Souvenir"};
+            cmbTrabajo.DataSource = new List<String> { "", "Zarcereño", "Restaurante", "Souvenir" };
         }
         private void frmApuntes_Load(object sender, EventArgs e)
         {
@@ -67,17 +67,17 @@ namespace ApuntesElJardin.Forms
 
         private void gridApuntes_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.RowIndex < 0) return;
+            if (e.RowIndex < 0) return;
             if (gridApuntes.Columns[e.ColumnIndex].Name == "PagarTodo")
             {
                 int idApunte = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
                 if (MessageBox.Show("¿Está seguro que desea pagar este apunte?\n" + gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString() + "\nMonto: " + Convert.ToDecimal(gridApuntes.Rows[e.RowIndex].Cells["Monto"].Value).ToString("C2", new System.Globalization.CultureInfo("es-CR")), "Confirmar Pago", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     int idEmpleado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
-                    if(apuntesBL.PagarTodo(idEmpleado))
+                    if (apuntesBL.PagarTodo(idEmpleado))
                     {
                         CargarGrid();
-                        if(txtNombre.Text.Length >= 3)
+                        if (txtNombre.Text.Length >= 3)
                         {
                             var filtrados = apuntesZarcereño.FindAll(a => a.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0);
                             gridApuntes.DataSource = filtrados;
@@ -90,7 +90,7 @@ namespace ApuntesElJardin.Forms
                     CargarGrid();
                 }
             }
-            else if(gridApuntes.Columns[e.ColumnIndex].Name == "Detalles")
+            else if (gridApuntes.Columns[e.ColumnIndex].Name == "Detalles")
             {
                 int idEmpleado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
                 string nombreCompleto = gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString();
@@ -132,7 +132,7 @@ namespace ApuntesElJardin.Forms
             }
             catch
             {
-                    MessageBox.Show("Error al abrir el historial");
+                MessageBox.Show("Error al abrir el historial");
             }
         }
 
@@ -140,5 +140,7 @@ namespace ApuntesElJardin.Forms
         {
             this.Close();
         }
+
+        
     }
 }

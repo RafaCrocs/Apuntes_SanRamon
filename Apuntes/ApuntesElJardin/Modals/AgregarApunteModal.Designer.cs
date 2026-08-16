@@ -47,19 +47,20 @@
             txtNombre.BorderStyle = BorderStyle.FixedSingle;
             txtNombre.Font = new Font("Segoe UI", 15F);
             txtNombre.ForeColor = SystemColors.MenuText;
-            txtNombre.Location = new Point(44, 97);
+            txtNombre.Location = new Point(50, 129);
+            txtNombre.Margin = new Padding(3, 4, 3, 4);
             txtNombre.Name = "txtNombre";
             txtNombre.ReadOnly = true;
-            txtNombre.Size = new Size(508, 34);
+            txtNombre.Size = new Size(580, 41);
             txtNombre.TabIndex = 0;
             // 
             // lblEmpleado
             // 
             lblEmpleado.AutoSize = true;
             lblEmpleado.Font = new Font("Segoe UI", 15F);
-            lblEmpleado.Location = new Point(44, 61);
+            lblEmpleado.Location = new Point(50, 81);
             lblEmpleado.Name = "lblEmpleado";
-            lblEmpleado.Size = new Size(127, 28);
+            lblEmpleado.Size = new Size(160, 35);
             lblEmpleado.TabIndex = 1;
             lblEmpleado.Text = "Colaborador:";
             // 
@@ -67,9 +68,9 @@
             // 
             lblMonto.AutoSize = true;
             lblMonto.Font = new Font("Segoe UI", 15F);
-            lblMonto.Location = new Point(48, 163);
+            lblMonto.Location = new Point(55, 217);
             lblMonto.Name = "lblMonto";
-            lblMonto.Size = new Size(76, 28);
+            lblMonto.Size = new Size(94, 35);
             lblMonto.TabIndex = 2;
             lblMonto.Text = "Monto:";
             // 
@@ -77,9 +78,9 @@
             // 
             label3.AutoSize = true;
             label3.Font = new Font("Segoe UI", 15F);
-            label3.Location = new Point(44, 245);
+            label3.Location = new Point(50, 327);
             label3.Name = "label3";
-            label3.Size = new Size(73, 28);
+            label3.Size = new Size(92, 35);
             label3.TabIndex = 3;
             label3.Text = "Detalle";
             // 
@@ -87,9 +88,10 @@
             // 
             txtMonto.BorderStyle = BorderStyle.FixedSingle;
             txtMonto.Font = new Font("Segoe UI", 15F);
-            txtMonto.Location = new Point(44, 194);
+            txtMonto.Location = new Point(50, 259);
+            txtMonto.Margin = new Padding(3, 4, 3, 4);
             txtMonto.Name = "txtMonto";
-            txtMonto.Size = new Size(208, 34);
+            txtMonto.Size = new Size(237, 41);
             txtMonto.TabIndex = 5;
             txtMonto.TextChanged += txtMonto_TextChanged;
             txtMonto.Leave += txtMonto_Leave;
@@ -98,18 +100,20 @@
             // 
             txtDetalle.BorderStyle = BorderStyle.FixedSingle;
             txtDetalle.Font = new Font("Segoe UI", 15F);
-            txtDetalle.Location = new Point(44, 278);
+            txtDetalle.Location = new Point(50, 371);
+            txtDetalle.Margin = new Padding(3, 4, 3, 4);
             txtDetalle.Name = "txtDetalle";
-            txtDetalle.Size = new Size(398, 34);
+            txtDetalle.Size = new Size(455, 41);
             txtDetalle.TabIndex = 6;
             // 
             // btnAceptar
             // 
             btnAceptar.BackColor = Color.FromArgb(192, 255, 192);
             btnAceptar.Font = new Font("Segoe UI", 15F);
-            btnAceptar.Location = new Point(122, 352);
+            btnAceptar.Location = new Point(139, 469);
+            btnAceptar.Margin = new Padding(3, 4, 3, 4);
             btnAceptar.Name = "btnAceptar";
-            btnAceptar.Size = new Size(154, 47);
+            btnAceptar.Size = new Size(176, 63);
             btnAceptar.TabIndex = 7;
             btnAceptar.Text = "ACEPTAR";
             btnAceptar.UseVisualStyleBackColor = false;
@@ -118,9 +122,9 @@
             // lblCantidad
             // 
             lblCantidad.AutoSize = true;
-            lblCantidad.Location = new Point(48, 143);
+            lblCantidad.Location = new Point(55, 191);
             lblCantidad.Name = "lblCantidad";
-            lblCantidad.Size = new Size(67, 15);
+            lblCantidad.Size = new Size(84, 20);
             lblCantidad.TabIndex = 10;
             lblCantidad.Text = "Cantidad: 0";
             // 
@@ -128,9 +132,10 @@
             // 
             btnLimpiar.BackColor = Color.FromArgb(255, 192, 192);
             btnLimpiar.Font = new Font("Segoe UI", 15F);
-            btnLimpiar.Location = new Point(307, 352);
+            btnLimpiar.Location = new Point(351, 469);
+            btnLimpiar.Margin = new Padding(3, 4, 3, 4);
             btnLimpiar.Name = "btnLimpiar";
-            btnLimpiar.Size = new Size(136, 47);
+            btnLimpiar.Size = new Size(155, 63);
             btnLimpiar.TabIndex = 11;
             btnLimpiar.Text = "LIMPIAR";
             btnLimpiar.UseVisualStyleBackColor = false;
@@ -141,9 +146,9 @@
             lblCadaUno.AutoSize = true;
             lblCadaUno.Enabled = false;
             lblCadaUno.Font = new Font("Segoe UI", 15F);
-            lblCadaUno.Location = new Point(276, 194);
+            lblCadaUno.Location = new Point(315, 259);
             lblCadaUno.Name = "lblCadaUno";
-            lblCadaUno.Size = new Size(0, 28);
+            lblCadaUno.Size = new Size(0, 35);
             lblCadaUno.TabIndex = 12;
             // 
             // btnbuscar
@@ -154,10 +159,9 @@
             btnbuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             btnbuscar.IconSize = 30;
             btnbuscar.ImageAlign = ContentAlignment.MiddleLeft;
-            btnbuscar.Location = new Point(444, 48);
-            btnbuscar.Margin = new Padding(3, 2, 3, 2);
+            btnbuscar.Location = new Point(507, 64);
             btnbuscar.Name = "btnbuscar";
-            btnbuscar.Size = new Size(108, 40);
+            btnbuscar.Size = new Size(123, 53);
             btnbuscar.TabIndex = 14;
             btnbuscar.Text = "BUSCAR";
             btnbuscar.TextAlign = ContentAlignment.MiddleRight;
@@ -172,10 +176,9 @@
             iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconButton1.IconSize = 30;
             iconButton1.ImageAlign = ContentAlignment.BottomLeft;
-            iconButton1.Location = new Point(386, 433);
-            iconButton1.Margin = new Padding(3, 2, 3, 2);
+            iconButton1.Location = new Point(441, 577);
             iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(165, 45);
+            iconButton1.Size = new Size(189, 60);
             iconButton1.TabIndex = 16;
             iconButton1.Text = "Pagar Apunte";
             iconButton1.TextAlign = ContentAlignment.MiddleRight;
@@ -184,10 +187,10 @@
             // 
             // AgregarApunteModal
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.InactiveCaption;
-            ClientSize = new Size(578, 503);
+            ClientSize = new Size(661, 671);
             Controls.Add(iconButton1);
             Controls.Add(btnbuscar);
             Controls.Add(lblCadaUno);
@@ -201,10 +204,11 @@
             Controls.Add(lblEmpleado);
             Controls.Add(txtNombre);
             FormBorderStyle = FormBorderStyle.FixedSingle;
+            Margin = new Padding(3, 4, 3, 4);
             MaximizeBox = false;
             Name = "AgregarApunteModal";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "Apuntes Restaurante  v1.1.0";
+            Text = "Apuntes Souvenir  v1.1.0";
             ResumeLayout(false);
             PerformLayout();
         }

@@ -20,7 +20,7 @@ namespace ApuntesEmpleados.DAL.BD
                 using (SqlCommand cmd = new SqlCommand("SP_HistorialPagosPorOrigen", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Origen", "Restaurante");
+                    cmd.Parameters.AddWithValue("@Origen", "Souvenir");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {

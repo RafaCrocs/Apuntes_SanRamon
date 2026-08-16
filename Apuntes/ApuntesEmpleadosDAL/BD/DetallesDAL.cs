@@ -22,7 +22,7 @@ namespace ApuntesEmpleados.DAL.BD
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@IdEmpleado", IdEmpleado);
-                    cmd.Parameters.AddWithValue("@Origen", "Restaurante");
+                    cmd.Parameters.AddWithValue("@Origen", "Souvenir");
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
