@@ -1,3 +1,4 @@
+using ApuntesElJardin.Modals;
 using ApuntesTodos.BL;
 using ApuntesTodos.Entities;
 
@@ -20,7 +21,7 @@ namespace ApuntesTodos
         }
         private void CargarCombos()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Souvenir", "Zarcereño", "Restaurante"};
+            cmbTrabajo.DataSource = new List<String> { "", "Souvenir", "Zarcereño", "Restaurante" };
         }
 
         private void ApuntesTodos_Load(object sender, EventArgs e)
@@ -82,7 +83,7 @@ namespace ApuntesTodos
             if (gridApuntes.Columns[e.ColumnIndex].Name == "Pagado")
             {
                 int idSelecionado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
-                if(MessageBox.Show("¿Confirma que desea pagar los apuntes de este empleado?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("¿Confirma que desea pagar los apuntes de este empleado?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     if (apuntesBL.PagarApuntesSalario(idSelecionado))
                     {
@@ -110,6 +111,13 @@ namespace ApuntesTodos
         {
             frmHistorial frmHistorial = new frmHistorial();
             frmHistorial.Show();
+        }
+
+        private void btnAgreagrColaborador_Click(object sender, EventArgs e)
+        {
+            AgregarEmpleadoModal modal = new AgregarEmpleadoModal();
+            modal.ShowDialog();
+            CargarGrid();
         }
     }
 }
