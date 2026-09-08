@@ -1,4 +1,5 @@
 using ApuntesElJardin.Modals;
+using ApuntesEmpleados.BL;
 
 namespace ApuntesElJardin
 {
@@ -14,7 +15,7 @@ namespace ApuntesElJardin
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new AgregarApunteModal());
+            Application.Run(new AgregarApunteModal(new ApuntesBL()));
         }
     }
 }

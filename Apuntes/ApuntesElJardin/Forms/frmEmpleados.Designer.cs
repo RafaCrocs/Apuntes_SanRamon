@@ -36,6 +36,9 @@
             cmbTrabajo = new ComboBox();
             btnNuevo = new FontAwesome.Sharp.IconButton();
             iconButton1 = new FontAwesome.Sharp.IconButton();
+            IdEmpleado = new DataGridViewTextBoxColumn();
+            NombreCompleto = new DataGridViewTextBoxColumn();
+            LugarTrabajo = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)gridEmpleados).BeginInit();
             SuspendLayout();
             // 
@@ -43,6 +46,7 @@
             // 
             gridEmpleados.BackgroundColor = SystemColors.Control;
             gridEmpleados.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            gridEmpleados.Columns.AddRange(new DataGridViewColumn[] { IdEmpleado, NombreCompleto, LugarTrabajo });
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = SystemColors.Window;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 14F);
@@ -58,7 +62,6 @@
             gridEmpleados.RowHeadersWidth = 51;
             gridEmpleados.Size = new Size(945, 527);
             gridEmpleados.TabIndex = 0;
-            gridEmpleados.CellContentDoubleClick += gridEmpleados_CellContentDoubleClick;
             gridEmpleados.CellDoubleClick += gridEmpleados_CellDoubleClick;
             // 
             // lblBuscarNombre
@@ -118,7 +121,6 @@
             btnNuevo.Text = "Nuevo";
             btnNuevo.TextAlign = ContentAlignment.MiddleRight;
             btnNuevo.UseVisualStyleBackColor = true;
-            btnNuevo.Visible = false;
             btnNuevo.Click += btnNuevo_Click;
             // 
             // iconButton1
@@ -138,6 +140,34 @@
             iconButton1.TextAlign = ContentAlignment.TopCenter;
             iconButton1.UseVisualStyleBackColor = false;
             iconButton1.Click += iconButton1_Click;
+            // 
+            // IdEmpleado
+            // 
+            IdEmpleado.DataPropertyName = "IdEmpleado";
+            IdEmpleado.HeaderText = "IdEmpleado";
+            IdEmpleado.MinimumWidth = 6;
+            IdEmpleado.Name = "IdEmpleado";
+            IdEmpleado.ReadOnly = true;
+            IdEmpleado.Visible = false;
+            IdEmpleado.Width = 125;
+            // 
+            // NombreCompleto
+            // 
+            NombreCompleto.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            NombreCompleto.DataPropertyName = "NombreCompleto";
+            NombreCompleto.HeaderText = "Nombre Completo";
+            NombreCompleto.MinimumWidth = 6;
+            NombreCompleto.Name = "NombreCompleto";
+            NombreCompleto.ReadOnly = true;
+            // 
+            // LugarTrabajo
+            // 
+            LugarTrabajo.DataPropertyName = "LugarTrabajo";
+            LugarTrabajo.HeaderText = "Lugar de Trabajo";
+            LugarTrabajo.MinimumWidth = 6;
+            LugarTrabajo.Name = "LugarTrabajo";
+            LugarTrabajo.ReadOnly = true;
+            LugarTrabajo.Width = 200;
             // 
             // frmEmpleados
             // 
@@ -172,5 +202,8 @@
         private ComboBox cmbTrabajo;
         private FontAwesome.Sharp.IconButton btnNuevo;
         private FontAwesome.Sharp.IconButton iconButton1;
+        private DataGridViewTextBoxColumn IdEmpleado;
+        private DataGridViewTextBoxColumn NombreCompleto;
+        private DataGridViewTextBoxColumn LugarTrabajo;
     }
 }

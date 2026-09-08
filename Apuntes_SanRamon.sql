@@ -38,7 +38,29 @@ create table HistorialPagos (
 );
 go
 
-create procedure SP_InsertarEmpleado
+
+
+create table LugaresTrabajo (
+	IdLugarTrabajo int primary key identity(1,1),
+	NombreLugarTrabajo nvarchar(255) not null
+);
+
+insert into LugaresTrabajo (NombreLugarTrabajo) values
+(''),
+('Zarcereño'),
+('Restaurante'),
+('Souvenir'),
+('Finca');
+go
+
+create or alter procedure SP_ObtenerLugaresTrabajo
+as
+begin
+	select NombreLugarTrabajo from LugaresTrabajo;
+end;
+go
+
+create or alter procedure SP_InsertarEmpleado
 	@NombreCompleto nvarchar(255),
 	@LugarTrabajo nvarchar(255),
 	@Resultado bit output,
@@ -61,7 +83,7 @@ end
 go
 
 --Registrar Apunte
-create procedure SP_InsertarApunte
+create or alter procedure SP_InsertarApunte
 	@IdEmpleado int,
 	@Monto int,
 	@Detalle nvarchar(255),
@@ -91,7 +113,7 @@ end
 go
 
 -- Obtener Apuntes por Origen
-create procedure SP_ObtenerApuntesPorOrigen
+create or alter procedure SP_ObtenerApuntesPorOrigen
 	@Origen nvarchar(50)
 as
 begin
@@ -101,14 +123,14 @@ begin
 		e.LugarTrabajo,
 		SUM(a.Monto) as MontoTotal
 	from Apuntes a
-	inner join Empleados e on a.IdEmpleado = e.IdEmpleado
+	left join Empleados e on a.IdEmpleado = e.IdEmpleado
 	where Origen = @Origen
 	group by e.IdEmpleado, e.NombreCompleto, e.LugarTrabajo
 end
 go
 
 -- Ver Detalle de Apunte
-create procedure SP_DetalleApuntesPorOrigen
+create or alter procedure SP_DetalleApuntesPorOrigen
 	@IdEmpleado int,
 	@Origen nvarchar(50)
 as
@@ -116,8 +138,6 @@ begin
 	select
 		a.IdApunte,
 		e.NombreCompleto,
-		e.LugarTrabajo,
-		a.Origen,
 		a.Monto,
 		a.Detalle,
 		a.Fecha
@@ -128,9 +148,8 @@ end
 go
 
 -- Pagar Apunte
-create procedure SP_PagarApunte
+create or alter procedure SP_PagarApunte
 	@IdApunte int,
-	@Origen nvarchar(50),
 	@SePagoEn nvarchar(255),
 	@Resultado bit output,
 	@Mensaje nvarchar(255) output
@@ -138,8 +157,8 @@ as
 begin
 	begin try
 
-		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen)
-		select IdEmpleado, Monto, Detalle, @SePagoEn, @Origen
+		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen, FechaApunte)
+		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen, Fecha
 		from Apuntes
 		where IdApunte = @IdApunte;
 
@@ -158,17 +177,16 @@ end
 go
 
 -- Pagar Todo
-create procedure SP_PagarTodo
+create or alter procedure SP_PagarTodo
 	@IdEmpleado int,
-	@Origen nvarchar(50),
 	@SePagoEn nvarchar(255),
 	@Resultado bit output,
 	@Mensaje nvarchar(255) output
 as
 begin
 	begin try
-		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen)
-		select IdEmpleado, Monto, Detalle, @SePagoEn, @Origen
+		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen, FechaApunte)
+		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen, Fecha
 		from Apuntes
 		where IdEmpleado = @IdEmpleado;
 
@@ -184,9 +202,8 @@ begin
 	end catch
 end
 go
-
 -- Historial de pagos por origen
-create procedure SP_HistorialPagosPorOrigen
+create or alter procedure SP_HistorialPagosPorOrigen
 	@Origen nvarchar(50)
 as
 begin
@@ -205,7 +222,7 @@ end
 go
 
 --Obtener todos los Apuntes para Admin
-create procedure SP_ObtenerApuntesTodos
+create or alter procedure SP_ObtenerApuntesTodos
 AS
 BEGIN
 	select
@@ -224,7 +241,7 @@ END;
 GO
 
 -- Ver Detalles de Apuntes para Admin
-create procedure SP_DetalleApuntesTodos
+create or alter procedure SP_DetalleApuntesTodos
 	@IdEmpleado int
 AS
 BEGIN
@@ -257,7 +274,7 @@ inner join Empleados e on hp.IdEmpleado = e.IdEmpleado
 go
 
 -- Pagar Todo en Salario
-create procedure SP_PagarTodoSalario
+create or alter procedure SP_PagarTodoSalario
 	@IdEmpleado int,
 	@SePagoEn nvarchar(255),
 	@Resultado bit output,
@@ -279,3 +296,8 @@ begin
 		set @Mensaje = 'Error al pagar los apuntes: ' + ERROR_MESSAGE();
 	end catch
 end
+
+
+-- Actualizaciones
+alter table Apuntes drop CONSTRAINT CHK_Origen_Apuntes
+alter table HistorialPagos drop CONSTRAINT CHK_Origen_Pagos

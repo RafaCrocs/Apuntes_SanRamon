@@ -1,6 +1,6 @@
-﻿using ApunteEmpleados.Entities;
-using ApuntesElJardin.Modals;
+﻿using ApuntesElJardin.Modals;
 using ApuntesEmpleados.BL;
+using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,39 +13,38 @@ namespace ApuntesElJardin.Forms
 {
     public partial class frmEmpleados : Form
     {
-        public frmEmpleados()
+        public frmEmpleados(ApuntesBL apuntesBL)
         {
             InitializeComponent();
+            this.apuntesBL = apuntesBL;
         }
         public Empleado empleado;
 
         private EmpleadosBL empleadosBL = new EmpleadosBL();
+        private ApuntesBL apuntesBL;
         private List<Empleado> empleados = new List<Empleado>();
 
-        private void configurarColumnas()
-        {
-            gridEmpleados.Columns.Clear();
-
-            gridEmpleados.Columns.Add(new DataGridViewButtonColumn { Name = "Agregar", HeaderText = "", Width = 50 });
-
-            gridEmpleados.Columns.Add(new DataGridViewTextBoxColumn { Name = "IdEmpleado", DataPropertyName = "IdEmpleado", HeaderText = "IdEmpleado", Visible = false });
-            gridEmpleados.Columns.Add(new DataGridViewTextBoxColumn { Name = "NombreCompleto", DataPropertyName = "NombreCompleto", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            gridEmpleados.Columns.Add(new DataGridViewTextBoxColumn { Name = "LugarTrabajo", DataPropertyName = "LugarTrabajo", HeaderText = "De: " });
-
-        }
+        private LugaresTrabajoBL lugaresTrabajoBL = new LugaresTrabajoBL();
 
         private void CargarGrid()
         {
 
-            empleados = empleadosBL.Empleados_ObtenerTodos();
-            gridEmpleados.DataSource = null;
-            configurarColumnas();
+            empleados = empleadosBL.Empleados_ObtenerTodos(out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             gridEmpleados.DataSource = empleados;
         }
 
         private void CargarCombo()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Souvenir", "Minimarket", "Restaurante" , "Zarcereño"};
+            cmbTrabajo.DataSource = lugaresTrabajoBL.Lugares_ObtenerTodos(out string mensaje);
+            cmbTrabajo.DisplayMember = "NombreLugarTrabajo";
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void frmEmpleados_Load(object sender, EventArgs e)
         {
@@ -54,22 +53,6 @@ namespace ApuntesElJardin.Forms
             gridEmpleados.RowsDefaultCellStyle.BackColor = Color.LightBlue;
             gridEmpleados.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             gridEmpleados.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-        }
-
-        private void gridEmpleados_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
-            {
-                return;
-            }
-            int idEmpleado = (int)gridEmpleados.Rows[e.RowIndex].Cells["IdEmpleado"].Value;
-            string nombreEmpleado = (string)gridEmpleados.Rows[e.RowIndex].Cells["NombreCompleto"].Value;
-            empleado = new Empleado()
-            {
-                IdEmpleado = idEmpleado,
-                NombreCompleto = nombreEmpleado
-            };
-            this.DialogResult = DialogResult.OK;
         }
 
         private void txtNombre_TextChanged(object sender, EventArgs e)
@@ -131,14 +114,21 @@ namespace ApuntesElJardin.Forms
             {
                 return;
             }
-            int idEmpleado = (int)gridEmpleados.Rows[e.RowIndex].Cells["IdEmpleado"].Value;
-            string nombreEmpleado = (string)gridEmpleados.Rows[e.RowIndex].Cells["NombreCompleto"].Value;
             empleado = new Empleado()
             {
-                IdEmpleado = idEmpleado,
-                NombreCompleto = nombreEmpleado
+                IdEmpleado = int.Parse(gridEmpleados.Rows[e.RowIndex].Cells["IdEmpleado"].Value.ToString()),
+                NombreCompleto = gridEmpleados.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString()
             };
-            this.DialogResult = DialogResult.OK;
+
+            apuntesBL.AgregarALista(empleado, out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
+            {
+                this.DialogResult = DialogResult.OK;
+            }
         }
     }
 }

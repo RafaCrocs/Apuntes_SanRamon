@@ -50,9 +50,10 @@
             // 
             txtNombre.BorderStyle = BorderStyle.FixedSingle;
             txtNombre.Font = new Font("Segoe UI", 18F);
-            txtNombre.Location = new Point(303, 130);
+            txtNombre.Location = new Point(346, 173);
+            txtNombre.Margin = new Padding(3, 4, 3, 4);
             txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(234, 39);
+            txtNombre.Size = new Size(267, 47);
             txtNombre.TabIndex = 20;
             txtNombre.TextChanged += txtNombre_TextChanged;
             // 
@@ -60,9 +61,9 @@
             // 
             lblBuscarNombre.AutoSize = true;
             lblBuscarNombre.Font = new Font("Segoe UI", 18F);
-            lblBuscarNombre.Location = new Point(46, 130);
+            lblBuscarNombre.Location = new Point(53, 173);
             lblBuscarNombre.Name = "lblBuscarNombre";
-            lblBuscarNombre.Size = new Size(226, 32);
+            lblBuscarNombre.Size = new Size(283, 41);
             lblBuscarNombre.TabIndex = 19;
             lblBuscarNombre.Text = "Buscar por Nombre:";
             // 
@@ -79,11 +80,12 @@
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             gridHistorial.DefaultCellStyle = dataGridViewCellStyle1;
-            gridHistorial.Location = new Point(45, 246);
+            gridHistorial.Location = new Point(51, 328);
+            gridHistorial.Margin = new Padding(3, 4, 3, 4);
             gridHistorial.Name = "gridHistorial";
             gridHistorial.ReadOnly = true;
             gridHistorial.RowHeadersWidth = 51;
-            gridHistorial.Size = new Size(985, 380);
+            gridHistorial.Size = new Size(1126, 507);
             gridHistorial.TabIndex = 18;
             gridHistorial.CellFormatting += gridHistorial_CellFormatting;
             // 
@@ -91,9 +93,9 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 18F);
-            label1.Location = new Point(45, 175);
+            label1.Location = new Point(51, 233);
             label1.Name = "label1";
-            label1.Size = new Size(200, 32);
+            label1.Size = new Size(250, 41);
             label1.TabIndex = 21;
             label1.Text = "Buscar por Fecha:";
             // 
@@ -101,9 +103,10 @@
             // 
             dateTimePicker1.Font = new Font("Segoe UI", 18F);
             dateTimePicker1.Format = DateTimePickerFormat.Short;
-            dateTimePicker1.Location = new Point(303, 175);
+            dateTimePicker1.Location = new Point(346, 233);
+            dateTimePicker1.Margin = new Padding(3, 4, 3, 4);
             dateTimePicker1.Name = "dateTimePicker1";
-            dateTimePicker1.Size = new Size(184, 39);
+            dateTimePicker1.Size = new Size(210, 47);
             dateTimePicker1.TabIndex = 22;
             // 
             // label2
@@ -111,9 +114,9 @@
             label2.AutoSize = true;
             label2.BackColor = SystemColors.InactiveCaption;
             label2.Font = new Font("Segoe UI", 25F);
-            label2.Location = new Point(23, 44);
+            label2.Location = new Point(26, 59);
             label2.Name = "label2";
-            label2.Size = new Size(288, 46);
+            label2.Size = new Size(361, 57);
             label2.TabIndex = 23;
             label2.Text = "Historial de Pagos";
             // 
@@ -125,9 +128,10 @@
             iconButton1.IconColor = Color.Black;
             iconButton1.IconFont = FontAwesome.Sharp.IconFont.Auto;
             iconButton1.ImageAlign = ContentAlignment.BottomCenter;
-            iconButton1.Location = new Point(962, 34);
+            iconButton1.Location = new Point(1099, 45);
+            iconButton1.Margin = new Padding(3, 4, 3, 4);
             iconButton1.Name = "iconButton1";
-            iconButton1.Size = new Size(68, 62);
+            iconButton1.Size = new Size(78, 83);
             iconButton1.TabIndex = 24;
             iconButton1.TextAlign = ContentAlignment.TopCenter;
             iconButton1.UseVisualStyleBackColor = false;
@@ -146,7 +150,7 @@
             // NombreCompleto
             // 
             NombreCompleto.DataPropertyName = "NombreCompleto";
-            NombreCompleto.HeaderText = "NombreCompleto";
+            NombreCompleto.HeaderText = "Nombre Completo";
             NombreCompleto.MinimumWidth = 6;
             NombreCompleto.Name = "NombreCompleto";
             NombreCompleto.ReadOnly = true;
@@ -159,6 +163,7 @@
             Monto.MinimumWidth = 6;
             Monto.Name = "Monto";
             Monto.ReadOnly = true;
+            Monto.Width = 125;
             // 
             // Detalle
             // 
@@ -173,14 +178,17 @@
             // 
             Origen.DataPropertyName = "Origen";
             Origen.HeaderText = "Origen";
+            Origen.MinimumWidth = 6;
             Origen.Name = "Origen";
             Origen.ReadOnly = true;
             Origen.Visible = false;
+            Origen.Width = 125;
             // 
             // SePagoEn
             // 
             SePagoEn.DataPropertyName = "SePagoEn";
-            SePagoEn.HeaderText = "Se Pago En:";
+            SePagoEn.HeaderText = "Se pagó en:";
+            SePagoEn.MinimumWidth = 6;
             SePagoEn.Name = "SePagoEn";
             SePagoEn.ReadOnly = true;
             SePagoEn.Width = 150;
@@ -188,17 +196,18 @@
             // Fecha
             // 
             Fecha.DataPropertyName = "FechaPago";
-            Fecha.HeaderText = "Fecha Pagado";
+            Fecha.HeaderText = "Fecha de pago";
             Fecha.MinimumWidth = 6;
             Fecha.Name = "Fecha";
             Fecha.ReadOnly = true;
+            Fecha.Width = 125;
             // 
             // frmHistorial
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.InactiveCaption;
-            ClientSize = new Size(1083, 673);
+            ClientSize = new Size(1238, 897);
             ControlBox = false;
             Controls.Add(iconButton1);
             Controls.Add(label2);
@@ -208,6 +217,7 @@
             Controls.Add(lblBuscarNombre);
             Controls.Add(gridHistorial);
             FormBorderStyle = FormBorderStyle.None;
+            Margin = new Padding(3, 4, 3, 4);
             Name = "frmHistorial";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "frmHistorial";

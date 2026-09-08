@@ -1,4 +1,4 @@
-﻿using ApunteEmpleados.Entities;
+﻿using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,33 +10,42 @@ namespace ApuntesEmpleados.DAL.BD
     public class EmpleadosDAL
     {
 
-        public List<Empleado> Empleados_ObtenerTodos()
+        public List<Empleado> Empleados_ObtenerTodos(out string mensaje)
         {
             List<Empleado> empleados = new List<Empleado>();
+            mensaje = string.Empty;
 
             string query = "Select * from Empleados order by NombreCompleto";
 
-            using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
+            try
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
                 {
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
                     {
-                        while (dr.Read())
+                        using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            Empleado emp = new Empleado()
+                            while (dr.Read())
                             {
-                                IdEmpleado = Convert.ToInt32(dr["IdEmpleado"]),
-                                NombreCompleto = dr["NombreCompleto"].ToString(),
-                                LugarTrabajo = dr["LugarTrabajo"].ToString()
-                            };
-                            empleados.Add(emp);
+                                Empleado emp = new Empleado()
+                                {
+                                    IdEmpleado = Convert.ToInt32(dr["IdEmpleado"]),
+                                    NombreCompleto = dr["NombreCompleto"].ToString(),
+                                    LugarTrabajo = dr["LugarTrabajo"].ToString()
+                                };
+                                empleados.Add(emp);
+                            }
                         }
                     }
                 }
+                return empleados;
             }
-            return empleados;
+            catch (SqlException ex)
+            {
+                mensaje = "Error al obtener los colaboradores: " + ex.Message;
+                return new List<Empleado>();
+            }
         }
 
         public bool Empleados_Insertar(Empleado empleado, out string mensaje)

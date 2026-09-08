@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ApunteEmpleados.Entities
+namespace ApuntesEmpleados.Entities
 {
     public class Empleado
     {

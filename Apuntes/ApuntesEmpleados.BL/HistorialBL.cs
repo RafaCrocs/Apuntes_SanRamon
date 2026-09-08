@@ -1,7 +1,6 @@
 ﻿using ApuntesEmpleados.DAL.BD;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using ApuntesEmpleados.Utils;
+using ApuntesEmpleados.Entities;
 
 namespace ApuntesEmpleados.BL
 {
@@ -10,9 +9,9 @@ namespace ApuntesEmpleados.BL
 
         private HistorialDAL historialDAL = new HistorialDAL();
 
-        public List<Historial> Historial_ObtenerTodos()
+        public List<Historial> Historial_ObtenerTodos(out string mensaje)
         {
-            return historialDAL.Historial_ObtenerTodos();
+            return historialDAL.Historial_ObtenerTodos(AppConfig.Instance.Origen, out mensaje);
         }
     }
 }

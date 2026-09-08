@@ -1,56 +1,56 @@
 ﻿using ApuntesEmpleados.BL;
-using ApunteEmpleados.Entities;
 using System;
 using System.Windows.Forms;
+using ApuntesEmpleados.Entities;
 
 namespace ApuntesElJardin.Modals
 {
     public partial class AgregarEmpleadoModal : Form
     {
         private EmpleadosBL empleadosBL = new EmpleadosBL();
+        private LugaresTrabajoBL lugaresTrabajoBL = new LugaresTrabajoBL();
 
         public AgregarEmpleadoModal()
         {
             InitializeComponent();
         }
 
+
+
         private void CargarTrabajos()
         {
-            cmbTrabajo.DataSource = new List<string> { "Zarcereño", "Restaurante", "Souvenir" };
+            cmbTrabajo.DataSource = lugaresTrabajoBL.Lugares_ObtenerTodos(out string mensaje);
+            cmbTrabajo.DisplayMember = "NombreLugarTrabajo";
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(txtNombreCompleto.Text) ||
-                    string.IsNullOrWhiteSpace(cmbTrabajo.Text))
+                Empleado nuevoEmpleado = new Empleado
                 {
-                    MessageBox.Show("Por favor complete todos los campos.");
-                    return;
-                }
-
-                Empleado empleado = new Empleado
-                {
-                    NombreCompleto = txtNombreCompleto.Text.Trim(),
-                    LugarTrabajo = cmbTrabajo.Text.Trim()
+                    NombreCompleto = txtNombreCompleto.Text,
+                    LugarTrabajo = cmbTrabajo.Text
                 };
 
-                if (empleadosBL.Empleado_Insertar(empleado, out string mensaje))
+                if (empleadosBL.Empleado_Insertar(nuevoEmpleado, out string mensaje))
                 {
-                    MessageBox.Show(mensaje);
-                    DialogResult = DialogResult.OK;
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     this.Close();
                 }
                 else
                 {
-                    MessageBox.Show(mensaje);
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
             }
-            catch
+            catch(Exception ex)
             {
-                MessageBox.Show("Ocurrió un error al guardar el empleado. Por favor intente nuevamente.");
+                MessageBox.Show("Ocurrió un error al guardar el empleado. Por favor intente nuevamente.\n\nDetalles del error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

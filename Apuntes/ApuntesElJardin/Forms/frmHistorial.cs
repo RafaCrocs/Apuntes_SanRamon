@@ -1,5 +1,6 @@
-﻿using ApuntesEmpleados.BL;
-using ApuntesEmpleados.DAL.BD;
+﻿using ApuntesElJardin.Utils;
+using ApuntesEmpleados.BL;
+using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace ApuntesElJardin.Forms
 {
@@ -27,7 +29,11 @@ namespace ApuntesElJardin.Forms
 
         private void CagarGrid()
         {
-            listaHistorial = historialBL.Historial_ObtenerTodos();
+            listaHistorial = historialBL.Historial_ObtenerTodos(out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             gridHistorial.DataSource = listaHistorial;
         }
 
@@ -53,8 +59,8 @@ namespace ApuntesElJardin.Forms
         {
             if (gridHistorial.Columns[e.ColumnIndex].Name == "Monto" && e.Value != null)
             {
-                decimal monto = (decimal)e.Value;
-                e.Value = monto.ToString("C0", new System.Globalization.CultureInfo("es-CR"));
+                int monto = (int)e.Value;
+                e.Value = Formato.ConvertirMontoAMoneda(monto);
                 e.FormattingApplied = true;
             }
         }

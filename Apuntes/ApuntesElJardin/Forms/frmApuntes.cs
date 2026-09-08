@@ -1,11 +1,12 @@
-﻿using ApunteEmpleados.Entities;
+﻿using ApuntesEmpleados.Entities;
+using ApuntesElJardin.Utils;
 using ApuntesEmpleados.BL;
-using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -13,30 +14,53 @@ namespace ApuntesElJardin.Forms
 {
     public partial class frmApuntes : Form
     {
-        public frmApuntes()
+        public frmApuntes(ApuntesBL apuntesBL)
         {
+            this.apuntesBL = apuntesBL;
+            this.lugaresTrabajoBL = lugaresTrabajoBL;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             this.AutoScaleDimensions = new SizeF(96F, 96F);
             InitializeComponent();
         }
 
-        private ApuntesBL apuntesBL = new ApuntesBL();
-        private List<VerApuntesZarcereño> apuntesZarcereño;
+        private readonly ApuntesBL apuntesBL;
 
-        public void CargarGrid()
+        private List<Apunte> apuntes = new List<Apunte>();
+        private LugaresTrabajoBL lugaresTrabajoBL = new LugaresTrabajoBL();
+
+        private void Apuntes_ObtenerPorOrigen()
         {
-            apuntesZarcereño = apuntesBL.ApuntesZarcereño();
-            gridApuntes.DataSource = apuntesZarcereño;
+            apuntes = apuntesBL.Apuntes_ObtenerPorOrigen(out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void CargarGrid(List<Apunte> listaApuntes)
+        {
+            gridApuntes.DataSource = listaApuntes.Select(a => new
+            {
+                a.IdEmpleado,
+                a.Empleado.NombreCompleto,
+                a.Empleado.LugarTrabajo,
+                a.Monto
+            }).ToList();
         }
 
         private void CargarCombos()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Zarcereño", "Restaurante", "Souvenir"};
+            cmbTrabajo.DataSource = lugaresTrabajoBL.Lugares_ObtenerTodos(out string mensaje);
+            cmbTrabajo.DisplayMember = "NombreLugarTrabajo";
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void frmApuntes_Load(object sender, EventArgs e)
         {
-            CargarGrid();
             CargarCombos();
+            Apuntes_ObtenerPorOrigen();
+            CargarGrid(apuntes);
             gridApuntes.RowsDefaultCellStyle.BackColor = Color.LightBlue;
             gridApuntes.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             gridApuntes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -46,22 +70,26 @@ namespace ApuntesElJardin.Forms
         {
             if (gridApuntes.Columns[e.ColumnIndex].Name == "Monto" && e.Value != null)
             {
-                decimal monto = (decimal)e.Value;
-                e.Value = monto.ToString("C0", new System.Globalization.CultureInfo("es-CR"));
+                int monto = Convert.ToInt32(e.Value);
+                e.Value = Formato.ConvertirMontoAMoneda(monto);
                 e.FormattingApplied = true;
             }
         }
 
         private void txtNombre_TextChanged(object sender, EventArgs e)
         {
+            filtrarGrid();
+        }
+
+        private void filtrarGrid()
+        {
             if (txtNombre.Text.Length >= 3)
             {
-                var filtrados = apuntesZarcereño.FindAll(a => a.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0);
-                gridApuntes.DataSource = filtrados;
+                CargarGrid(apuntes.FindAll(a => a.Empleado.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0));
             }
             else
             {
-                gridApuntes.DataSource = apuntesZarcereño;
+                CargarGrid(apuntes);
             }
         }
 
@@ -70,40 +98,41 @@ namespace ApuntesElJardin.Forms
             if(e.RowIndex < 0) return;
             if (gridApuntes.Columns[e.ColumnIndex].Name == "PagarTodo")
             {
-                int idApunte = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
-                if (MessageBox.Show("¿Está seguro que desea pagar este apunte?\n" + gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString() + "\nMonto: " + Convert.ToDecimal(gridApuntes.Rows[e.RowIndex].Cells["Monto"].Value).ToString("C2", new System.Globalization.CultureInfo("es-CR")), "Confirmar Pago", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                if (MessageBox.Show("¿Está seguro que desea pagar este apunte?\n" + "Colaborador: " + gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString() + "\nMonto: " + Formato.ConvertirMontoAMoneda(gridApuntes.Rows[e.RowIndex].Cells["Monto"].Value), "Confirmar Pago", MessageBoxButtons.YesNo) == DialogResult.Yes)
                 {
                     int idEmpleado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
-                    if(apuntesBL.PagarTodo(idEmpleado))
+                    if(apuntesBL.PagarTodoApuntesEmpleado(idEmpleado, out string mensaje))
                     {
-                        CargarGrid();
-                        if(txtNombre.Text.Length >= 3)
-                        {
-                            var filtrados = apuntesZarcereño.FindAll(a => a.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0);
-                            gridApuntes.DataSource = filtrados;
-                        }
+                        Apuntes_ObtenerPorOrigen();
+                        MessageBox.Show(mensaje, "Pago exitoso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        
+                        filtrarGrid();
                     }
                     else
                     {
-                        MessageBox.Show("Ocurrió un error al procesar el pago. Por favor, inténtelo de nuevo o contacte al patron.", "Error de pago", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(mensaje, "Error de pago", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    CargarGrid();
                 }
             }
             else if(gridApuntes.Columns[e.ColumnIndex].Name == "Detalles")
             {
-                int idEmpleado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value);
-                string nombreCompleto = gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString();
-                frmDetalles detalles = new frmDetalles(idEmpleado, nombreCompleto);
+                Empleado empleado = new Empleado
+                {
+                    IdEmpleado = Convert.ToInt32(gridApuntes.Rows[e.RowIndex].Cells["IdEmpleado"].Value),
+                    NombreCompleto = gridApuntes.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString()
+                };
+
+                frmDetalles detalles = new frmDetalles(empleado, apuntesBL);
                 detalles.ShowDialog();
+                Apuntes_ObtenerPorOrigen();
                 if (txtNombre.Text.Length >= 3)
                 {
-                    var filtrados = apuntesZarcereño.FindAll(a => a.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0);
-                    gridApuntes.DataSource = filtrados;
+                    CargarGrid(apuntes.FindAll(a => a.Empleado.NombreCompleto.IndexOf(txtNombre.Text, StringComparison.OrdinalIgnoreCase) >= 0));
+                    return;
                 }
                 else
                 {
-                    CargarGrid();
+                    CargarGrid(apuntes);
                 }
             }
         }
@@ -112,13 +141,13 @@ namespace ApuntesElJardin.Forms
         {
             if (cmbTrabajo.Text == "")
             {
-                gridApuntes.DataSource = apuntesZarcereño;
+                CargarGrid(apuntes);
                 return;
             }
             else
             {
-                var empleadosFiltro = apuntesZarcereño.Where(x => x.LugarTrabajo.ToLower().Contains(cmbTrabajo.Text.ToLower())).ToList();
-                gridApuntes.DataSource = empleadosFiltro;
+                var empleadosFiltro = apuntes.Where(x => x.Empleado.LugarTrabajo.ToLower().Contains(cmbTrabajo.Text.ToLower())).ToList();
+                CargarGrid(empleadosFiltro);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using ApunteEmpleados.Entities;
+﻿using ApuntesEmpleados.Entities;
+using ApuntesElJardin.Utils;
 using ApuntesElJardin.Forms;
 using ApuntesEmpleados.BL;
 using System;
@@ -14,13 +15,17 @@ namespace ApuntesElJardin.Modals
 {
     public partial class AgregarApunteModal : Form
     {
-        public AgregarApunteModal()
+        public AgregarApunteModal(ApuntesBL apuntesBL)
         {
             InitializeComponent();
+            this.apuntesBL = apuntesBL;
         }
 
-        private ApuntesBL apuntesBL = new ApuntesBL();
+        private ApuntesBL apuntesBL;
         public Apunte nuevoApunte = new Apunte();
+
+        private int CantidadSeleccionados = 0;
+
 
         private void BorrarCampos()
         {
@@ -28,120 +33,77 @@ namespace ApuntesElJardin.Modals
             txtMonto.Text = string.Empty;
             txtDetalle.Text = string.Empty;
             lblCadaUno.Text = string.Empty;
-            lblCantidad.Text = string.Empty;
-            cantidad = 0;
+            apuntesBL.LimpiarLista();
         }
-        int cantidad = 0;
 
-        List<int> codigos = new List<int>();
 
         private void btnAceptar_Click(object sender, EventArgs e)
         {
-            try
+            int montoPorPersona = apuntesBL.CalcularTotalCadaUno((int.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out int monto) ? monto : 0), CantidadSeleccionados);
+            for (int i = 0; i < CantidadSeleccionados; i++)
             {
-                if (txtDetalle.Text == string.Empty)
+                nuevoApunte = new Apunte()
                 {
-                    MessageBox.Show("Agregue un detalle", "Detalle", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
+                    IdEmpleado = apuntesBL.ObtenerListaPorApuntar()[i].IdEmpleado,
+                    Monto = montoPorPersona,
+                    Detalle = txtDetalle.Text
+                };
 
-                for (int i = 0; i < codigos.Count; i++)
+                if(apuntesBL.AgregarApunte(nuevoApunte, out string mensaje))
                 {
-                    if (cantidad == 1)
-                    {
-                        nuevoApunte = new Apunte()
-                        {
-                            Origen = "Zarcereño",
-                            IdEmpleado = codigos[i],
-                            Monto = int.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out int monto) ? monto : 0,
-                            Detalle = txtDetalle.Text,
-                        };
-
-                    }
-                    else
-                    {
-                        nuevoApunte = new Apunte()
-                        {
-                            Origen = "Zarcereño",
-                            IdEmpleado = codigos[i],
-                            Monto = int.TryParse(lblCadaUno.Text.Replace("C/U: ", ""), NumberStyles.Currency, new CultureInfo("es-CR"), out int monto) ? monto : 0,
-                            Detalle = txtDetalle.Text,
-                        };
-
-                    }
-
-                    if (apuntesBL.AgregarApunte(nuevoApunte, out string mensaje))
-                    {
-                        MessageBox.Show("Apunte agregado correctamente");
-                    }
-                    else
-                    {
-                        MessageBox.Show(mensaje);
-                    }
+                    MessageBox.Show(mensaje);
                 }
-                BorrarCampos();
-                codigos.Clear();
+                else
+                {
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            BorrarCampos();
 
-            }
-            catch
-            {
-                MessageBox.Show("Error al agregar el apunte");
-            }
         }
 
         private void btnLimpiar_Click(object sender, EventArgs e)
         {
             BorrarCampos();
-            codigos.Clear();
         }
 
         private void btnVerApuntes_Click(object sender, EventArgs e)
         {
-            frmApuntes frmApuntes = new frmApuntes();
+            frmApuntes frmApuntes = new frmApuntes(apuntesBL);
             frmApuntes.Show();
         }
 
         private void btnbuscar_Click(object sender, EventArgs e)
         {
-            try
+            frmEmpleados modal = new frmEmpleados(apuntesBL);
+            modal.ShowDialog();
+            CantidadSeleccionados = apuntesBL.CantidadEnListaPorApunte();
+            if (modal.DialogResult == DialogResult.OK)
             {
-                frmEmpleados modal = new frmEmpleados();
-                modal.ShowDialog();
-                if (modal.DialogResult == DialogResult.OK)
-                {
-                    if (txtNombre.Text.Contains(modal.empleado.NombreCompleto.ToString()))
-                    {
-                        MessageBox.Show("Esa persona ya esta agregada", "Cuidado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                        return;
-                    }
-                    if (modal.empleado != null)
-                    {
-                        if (txtNombre.Text != "")
-                        {
-                            txtNombre.Text += ", ";
-                        }
-                        codigos.Add(modal.empleado.IdEmpleado);
-                        cantidad++;
-                        txtNombre.Text += modal.empleado.NombreCompleto;
-                        lblCantidad.Text = "Cantidad: ";
-                        lblCantidad.Text += cantidad;
-                    }
-                    if (cantidad > 1 && txtMonto.Text != string.Empty)
-                    {
-                        lblCadaUno.Text = "C/U: ";
-                        decimal.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out decimal monto2);
-                        decimal CU = monto2 / cantidad;
-                        lblCadaUno.Text += CU.ToString("C0", new CultureInfo("es-CR"));
-                    }
 
+                txtNombre.Text = string.Empty;
+
+                for (int i = 0; i < CantidadSeleccionados; i++)
+                {
+                    txtNombre.Text += apuntesBL.ObtenerListaPorApuntar()[i].NombreCompleto;
+                    if (i < CantidadSeleccionados - 1)
+                    {
+                        txtNombre.Text += " | ";
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al seleccionar el empleado: " + ex.Message);
+                if (txtMonto.Text != string.Empty && CantidadSeleccionados > 1)
+                {
+                    ActualizarPrecioCU();
+                }
+
+
             }
         }
 
+        private void txtMonto_TextChanged(object sender, EventArgs e)
+        {
+            ActualizarPrecioCU();
+        }
         private void iconButton1_Click(object sender, EventArgs e)
         {
             try
@@ -150,35 +112,30 @@ namespace ApuntesElJardin.Modals
                 frmApuntes frmApuntes = new frmApuntes();
                 frmApuntes.Show();
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Error al mostrar los apuntes");
+                MessageBox.Show("Error al mostrar los apuntes: " + ex.Message);
             }
         }
 
-        private void txtMonto_TextChanged(object sender, EventArgs e)
-        {
-            if (cantidad > 1)
-            {
-                lblCadaUno.Text = "C/U: ";
-                decimal.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out decimal monto2);
-                decimal CU = monto2 / cantidad;
-                lblCadaUno.Text += CU.ToString("C0", new CultureInfo("es-CR"));
-            }
-        }
 
         private void txtMonto_Leave(object sender, EventArgs e)
         {
-            decimal.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out decimal monto);
-            txtMonto.Text = monto.ToString("C0", new CultureInfo("es-CR"));
-            if (cantidad > 1)
+            int.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out int monto);
+            txtMonto.Text = Formato.ConvertirMontoAMoneda(monto);
+            ActualizarPrecioCU();
+
+        }
+
+        private void ActualizarPrecioCU()
+        {
+            if (CantidadSeleccionados > 1)
             {
                 lblCadaUno.Text = "C/U: ";
-                decimal.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out decimal monto2);
-                decimal CU = monto2 / cantidad;
-                lblCadaUno.Text += CU.ToString("C0", new CultureInfo("es-CR"));
+                int.TryParse(txtMonto.Text, NumberStyles.Currency, new CultureInfo("es-CR"), out int monto2);
+                int CU = apuntesBL.CalcularTotalCadaUno(monto2, CantidadSeleccionados);
+                lblCadaUno.Text += Formato.ConvertirMontoAMoneda(CU);
             }
-
         }
     }
 }

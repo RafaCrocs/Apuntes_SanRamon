@@ -1,58 +1,61 @@
-﻿using ApuntesEmpleados.BL;
-using ApuntesEmpleados.DAL.BD;
+﻿using ApuntesElJardin.Utils;
+using ApuntesEmpleados.BL;
 using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Windows.Resources;
 
 namespace ApuntesElJardin.Forms
 {
     public partial class frmDetalles : Form
     {
-        private int idEmpleado;
-        private string nombreCompleto;
-
-        public frmDetalles(int IdEmpleado, string NombreCompleto)
+        public frmDetalles(Empleado empleado, ApuntesBL apuntesBL)
         {
             InitializeComponent();
-            idEmpleado = IdEmpleado;
-            nombreCompleto = NombreCompleto;
+            this.empleado = empleado;
+            this.apuntesBL = apuntesBL;
         }
 
-        private DetallesBL detallesBL = new DetallesBL();
-        private List<DetallesZarcereño> listaDetalles = new List<DetallesZarcereño>();
+        private readonly ApuntesBL apuntesBL;
 
-        private void ConfigurarGrid()
+        private List<Apunte> apuntes = new List<Apunte>();
+        private readonly Empleado empleado;
+
+        private void CargarDatos()
         {
-            gridDetalles.Columns.Add(new DataGridViewButtonColumn() { Name = "Pagar", HeaderText = "Pagar", Text = "Pagar", UseColumnTextForButtonValue = true, Visible = false});
-
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "IdApunte", DataPropertyName = "IdApunte", Visible = false });
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "NombreCompleto", DataPropertyName = "NombreCompleto", HeaderText = "Nombre Completo", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "LugarTrabajo", DataPropertyName = "LugarTrabajo", HeaderText = "Lugar de Trabajo", Visible = false});
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Origen", DataPropertyName = "Origen", HeaderText = "Origen", Visible = false });
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Monto", DataPropertyName = "Monto", HeaderText = "Monto" });
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Detalle", DataPropertyName = "Detalle", HeaderText = "Detalle", AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill });
-            gridDetalles.Columns.Add(new DataGridViewTextBoxColumn() { Name = "Fecha", DataPropertyName = "Fecha", HeaderText = "Fecha" });
+            apuntes = apuntesBL.Apuntes_ObtenerPorEmpleado(empleado, out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CargarGrid()
         {
-            listaDetalles = detallesBL.ObtenerDetallesZarcereño(idEmpleado);
-            gridDetalles.DataSource = listaDetalles;
+            gridDetalles.DataSource = apuntes.Select(a => new
+            {
+                a.IdApunte,
+                a.Empleado.NombreCompleto,
+                a.Detalle,
+                a.Monto,
+                a.Fecha
+            }).ToList();
         }
         private void frmDetalles_Load(object sender, EventArgs e)
         {
-            ConfigurarGrid();
+            CargarDatos();
             CargarGrid();
             gridDetalles.RowsDefaultCellStyle.BackColor = Color.LightBlue;
             gridDetalles.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             gridDetalles.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
 
-            lblNombre.Text = nombreCompleto;
+            lblNombre.Text = empleado.NombreCompleto;
         }
 
         private void gridDetalles_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
@@ -60,7 +63,7 @@ namespace ApuntesElJardin.Forms
             if (gridDetalles.Columns[e.ColumnIndex].Name == "Monto" && e.Value != null)
             {
                 int monto = (int)e.Value;
-                e.Value = monto.ToString("C0", new System.Globalization.CultureInfo("es-CR"));
+                e.Value = Formato.ConvertirMontoAMoneda(monto);
                 e.FormattingApplied = true;
             }
         }
@@ -72,15 +75,17 @@ namespace ApuntesElJardin.Forms
                 return;
             }
             int idApunte = Convert.ToInt32(gridDetalles.Rows[e.RowIndex].Cells["IdApunte"].Value);
-            if (MessageBox.Show("¿Está seguro que desea pagar este apunte?\n" + gridDetalles.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString() + "\nMonto: " + Convert.ToDecimal(gridDetalles.Rows[e.RowIndex].Cells["Monto"].Value).ToString("C0", new System.Globalization.CultureInfo("es-CR")), "Confirmar Pago", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            if (MessageBox.Show("¿Está seguro que desea pagar este apunte?\n" + gridDetalles.Rows[e.RowIndex].Cells["NombreCompleto"].Value.ToString() + "\nMonto: " + Formato.ConvertirMontoAMoneda(gridDetalles.Rows[e.RowIndex].Cells["Monto"].Value), "Confirmar Pago", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
-                if (detallesBL.PagarApunte(idApunte))
+                if (apuntesBL.PagarApunte(idApunte, out string mensaje))
                 {
+                    MessageBox.Show("Apunte pagado correctamente", "Exito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    CargarDatos();
                     CargarGrid();
                 }
                 else
                 {
-                    MessageBox.Show("Error al pagar el apunte");
+                    MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }

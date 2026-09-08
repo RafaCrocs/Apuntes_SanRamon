@@ -1,4 +1,4 @@
-﻿using ApunteEmpleados.Entities;
+﻿using ApuntesEmpleados.Entities;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,38 +10,47 @@ namespace ApuntesEmpleados.DAL.BD
     public class HistorialDAL
     {
 
-        public List<Historial> Historial_ObtenerTodos()
+        public List<Historial> Historial_ObtenerTodos(string origen, out string mensaje)
         {
             List<Historial> historial = new List<Historial>();
-
-            using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
+            mensaje = string.Empty;
+            try
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SP_HistorialPagosPorOrigen", conn))
-                {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@Origen", "Zarcereño");
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("SP_HistorialPagosPorOrigen", conn))
                     {
-                        while (dr.Read())
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.Parameters.AddWithValue("@Origen", origen);
+
+                        using (SqlDataReader dr = cmd.ExecuteReader())
                         {
-                            Historial pago = new Historial()
+                            while (dr.Read())
                             {
-                                IdHistorialPago = Convert.ToInt32(dr["IdHistorialPago"]),
-                                NombreCompleto = dr["NombreCompleto"].ToString(),
-                                Monto = Convert.ToDecimal(dr["Monto"]),
-                                Detalle = dr["Detalle"].ToString(),
-                                Origen = dr["Origen"].ToString(),
-                                SePagoEn = dr["SePagoEn"].ToString(),
-                                FechaPago = Convert.ToDateTime(dr["FechaPago"])
-                            };
-                            historial.Add(pago);
+                                Historial pago = new Historial()
+                                {
+                                    IdHistorialPago = Convert.ToInt32(dr["IdHistorialPago"]),
+                                    NombreCompleto = dr["NombreCompleto"].ToString(),
+                                    Monto = Convert.ToInt32(dr["Monto"]),
+                                    Detalle = dr["Detalle"].ToString(),
+                                    Origen = dr["Origen"].ToString(),
+                                    SePagoEn = dr["SePagoEn"].ToString(),
+                                    FechaPago = Convert.ToDateTime(dr["FechaPago"])
+                                };
+                                historial.Add(pago);
+                            }
                         }
                     }
                 }
+                return historial;
             }
-            return historial;
+            catch ( SqlException ex )
+            {
+                mensaje =  "Error al obtener el historial: "  + ex.Message;
+                return new List<Historial>() { new Historial() { NombreCompleto = "No se cargaron los datos" } };
+            }
         }
     }
 }
