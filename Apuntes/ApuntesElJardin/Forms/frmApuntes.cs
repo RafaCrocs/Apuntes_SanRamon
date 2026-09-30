@@ -9,14 +9,15 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using ApuntesEmpleados.Utils;
 
 namespace ApuntesElJardin.Forms
 {
     public partial class frmApuntes : Form
     {
-        public frmApuntes(ApuntesBL apuntesBL)
+        public frmApuntes(ApuntesBL apuntesBL = null)
         {
-            this.apuntesBL = apuntesBL;
+            this.apuntesBL = apuntesBL ?? new ApuntesBL();
             this.lugaresTrabajoBL = lugaresTrabajoBL;
             this.AutoScaleMode = AutoScaleMode.Dpi;
             this.AutoScaleDimensions = new SizeF(96F, 96F);
@@ -61,6 +62,10 @@ namespace ApuntesElJardin.Forms
             CargarCombos();
             Apuntes_ObtenerPorOrigen();
             CargarGrid(apuntes);
+            if(AppConfig.Instance.Origen != "Souvenir")
+            {
+                gridApuntes.Columns["PagarTodo"].Visible = false;
+            }
             gridApuntes.RowsDefaultCellStyle.BackColor = Color.LightBlue;
             gridApuntes.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             gridApuntes.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;

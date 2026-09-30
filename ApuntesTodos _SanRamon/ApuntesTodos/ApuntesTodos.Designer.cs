@@ -28,8 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             gridApuntes = new DataGridView();
+            Pagado = new DataGridViewButtonColumn();
+            Detalles = new DataGridViewButtonColumn();
+            NombreCompleto = new DataGridViewTextBoxColumn();
+            IdEmpleado = new DataGridViewTextBoxColumn();
+            LugarTrabajo = new DataGridViewTextBoxColumn();
+            DetallesSouvenir = new DataGridViewTextBoxColumn();
+            Souvenir = new DataGridViewTextBoxColumn();
+            Zarcereño = new DataGridViewTextBoxColumn();
+            Restaurante = new DataGridViewTextBoxColumn();
+            Total = new DataGridViewTextBoxColumn();
             cmbTrabajo = new ComboBox();
             label1 = new Label();
             txtNombre = new TextBox();
@@ -37,112 +48,32 @@
             btnActualizar = new Button();
             label2 = new Label();
             button1 = new Button();
-            Pagado = new DataGridViewButtonColumn();
-            Detalles = new DataGridViewButtonColumn();
-            NombreCompleto = new DataGridViewTextBoxColumn();
-            IdEmpleado = new DataGridViewTextBoxColumn();
-            LugarTrabajo = new DataGridViewTextBoxColumn();
-            Zarcereño = new DataGridViewTextBoxColumn();
-            Souvenir = new DataGridViewTextBoxColumn();
-            Restaurante = new DataGridViewTextBoxColumn();
-            Total = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)gridApuntes).BeginInit();
             SuspendLayout();
             // 
             // gridApuntes
             // 
+            gridApuntes.Anchor = AnchorStyles.None;
             gridApuntes.BackgroundColor = SystemColors.Control;
             gridApuntes.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            gridApuntes.Columns.AddRange(new DataGridViewColumn[] { Pagado, Detalles, NombreCompleto, IdEmpleado, LugarTrabajo, Zarcereño, Souvenir, Restaurante, Total });
-            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = SystemColors.Window;
-            dataGridViewCellStyle1.Font = new Font("Segoe UI", 14F);
-            dataGridViewCellStyle1.ForeColor = SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
-            gridApuntes.DefaultCellStyle = dataGridViewCellStyle1;
-            gridApuntes.Location = new Point(70, 152);
+            gridApuntes.Columns.AddRange(new DataGridViewColumn[] { Pagado, Detalles, NombreCompleto, IdEmpleado, LugarTrabajo, DetallesSouvenir, Souvenir, Zarcereño, Restaurante, Total });
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = SystemColors.Window;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 14F);
+            dataGridViewCellStyle2.ForeColor = SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+            gridApuntes.DefaultCellStyle = dataGridViewCellStyle2;
+            gridApuntes.Location = new Point(73, 255);
+            gridApuntes.Margin = new Padding(20);
             gridApuntes.Name = "gridApuntes";
             gridApuntes.ReadOnly = true;
             gridApuntes.RowHeadersWidth = 51;
-            gridApuntes.Size = new Size(1128, 423);
+            gridApuntes.Size = new Size(1574, 611);
             gridApuntes.TabIndex = 0;
             gridApuntes.CellContentClick += gridApuntes_CellContentClick;
             gridApuntes.CellFormatting += gridApuntes_CellFormatting;
-            // 
-            // cmbTrabajo
-            // 
-            cmbTrabajo.Font = new Font("Segoe UI", 15F);
-            cmbTrabajo.FormattingEnabled = true;
-            cmbTrabajo.Location = new Point(358, 108);
-            cmbTrabajo.Name = "cmbTrabajo";
-            cmbTrabajo.Size = new Size(186, 36);
-            cmbTrabajo.TabIndex = 8;
-            cmbTrabajo.SelectedIndexChanged += cmbTrabajo_SelectedIndexChanged;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.BackColor = SystemColors.ActiveCaption;
-            label1.Font = new Font("Segoe UI", 15F);
-            label1.Location = new Point(70, 110);
-            label1.Name = "label1";
-            label1.Size = new Size(254, 28);
-            label1.TabIndex = 7;
-            label1.Text = "Buscar por lugar de Trabajo:";
-            // 
-            // txtNombre
-            // 
-            txtNombre.Font = new Font("Segoe UI", 15F);
-            txtNombre.Location = new Point(310, 58);
-            txtNombre.Name = "txtNombre";
-            txtNombre.Size = new Size(234, 34);
-            txtNombre.TabIndex = 6;
-            txtNombre.TextChanged += txtNombre_TextChanged;
-            // 
-            // lblBuscarNombre
-            // 
-            lblBuscarNombre.AutoSize = true;
-            lblBuscarNombre.BackColor = SystemColors.ActiveCaption;
-            lblBuscarNombre.Font = new Font("Segoe UI", 15F);
-            lblBuscarNombre.Location = new Point(70, 63);
-            lblBuscarNombre.Name = "lblBuscarNombre";
-            lblBuscarNombre.Size = new Size(186, 28);
-            lblBuscarNombre.TabIndex = 5;
-            lblBuscarNombre.Text = "Buscar por Nombre:";
-            // 
-            // btnActualizar
-            // 
-            btnActualizar.BackColor = Color.FromArgb(192, 255, 192);
-            btnActualizar.Location = new Point(1059, 110);
-            btnActualizar.Name = "btnActualizar";
-            btnActualizar.Size = new Size(139, 36);
-            btnActualizar.TabIndex = 9;
-            btnActualizar.Text = "ACTUALIZAR";
-            btnActualizar.UseVisualStyleBackColor = false;
-            btnActualizar.Click += btnActualizar_Click;
-            // 
-            // label2
-            // 
-            label2.BackColor = SystemColors.ActiveCaption;
-            label2.Dock = DockStyle.Top;
-            label2.Location = new Point(0, 0);
-            label2.Name = "label2";
-            label2.Size = new Size(1303, 369);
-            label2.TabIndex = 13;
-            label2.TextAlign = ContentAlignment.MiddleLeft;
-            // 
-            // button1
-            // 
-            button1.BackColor = Color.FromArgb(255, 255, 192);
-            button1.Location = new Point(914, 110);
-            button1.Name = "button1";
-            button1.Size = new Size(139, 36);
-            button1.TabIndex = 14;
-            button1.Text = "HISTORIAL";
-            button1.UseVisualStyleBackColor = false;
-            button1.Click += button1_Click;
             // 
             // Pagado
             // 
@@ -157,10 +88,12 @@
             // Detalles
             // 
             Detalles.HeaderText = "";
+            Detalles.MinimumWidth = 6;
             Detalles.Name = "Detalles";
             Detalles.ReadOnly = true;
             Detalles.Text = "Detalles";
             Detalles.UseColumnTextForButtonValue = true;
+            Detalles.Width = 125;
             // 
             // NombreCompleto
             // 
@@ -191,14 +124,16 @@
             LugarTrabajo.Visible = false;
             LugarTrabajo.Width = 125;
             // 
-            // Zarcereño
+            // DetallesSouvenir
             // 
-            Zarcereño.DataPropertyName = "Zarcereño";
-            Zarcereño.HeaderText = "Zarcereño";
-            Zarcereño.MinimumWidth = 6;
-            Zarcereño.Name = "Zarcereño";
-            Zarcereño.ReadOnly = true;
-            Zarcereño.Width = 125;
+            DetallesSouvenir.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            DetallesSouvenir.DataPropertyName = "DetallesSouvenir";
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            DetallesSouvenir.DefaultCellStyle = dataGridViewCellStyle1;
+            DetallesSouvenir.HeaderText = "Detalles de Souvenir:";
+            DetallesSouvenir.MinimumWidth = 6;
+            DetallesSouvenir.Name = "DetallesSouvenir";
+            DetallesSouvenir.ReadOnly = true;
             // 
             // Souvenir
             // 
@@ -208,6 +143,15 @@
             Souvenir.Name = "Souvenir";
             Souvenir.ReadOnly = true;
             Souvenir.Width = 125;
+            // 
+            // Zarcereño
+            // 
+            Zarcereño.DataPropertyName = "Zarcereño";
+            Zarcereño.HeaderText = "Zarcereño";
+            Zarcereño.MinimumWidth = 6;
+            Zarcereño.Name = "Zarcereño";
+            Zarcereño.ReadOnly = true;
+            Zarcereño.Width = 125;
             // 
             // Restaurante
             // 
@@ -227,11 +171,94 @@
             Total.ReadOnly = true;
             Total.Width = 150;
             // 
+            // cmbTrabajo
+            // 
+            cmbTrabajo.Anchor = AnchorStyles.None;
+            cmbTrabajo.Font = new Font("Segoe UI", 15F);
+            cmbTrabajo.FormattingEnabled = true;
+            cmbTrabajo.Location = new Point(402, 184);
+            cmbTrabajo.Margin = new Padding(3, 4, 3, 4);
+            cmbTrabajo.Name = "cmbTrabajo";
+            cmbTrabajo.Size = new Size(212, 43);
+            cmbTrabajo.TabIndex = 8;
+            cmbTrabajo.SelectedIndexChanged += cmbTrabajo_SelectedIndexChanged;
+            // 
+            // label1
+            // 
+            label1.Anchor = AnchorStyles.None;
+            label1.AutoSize = true;
+            label1.BackColor = SystemColors.ActiveCaption;
+            label1.Font = new Font("Segoe UI", 15F);
+            label1.Location = new Point(73, 187);
+            label1.Name = "label1";
+            label1.Size = new Size(327, 35);
+            label1.TabIndex = 7;
+            label1.Text = "Buscar por lugar de Trabajo:";
+            // 
+            // txtNombre
+            // 
+            txtNombre.Anchor = AnchorStyles.None;
+            txtNombre.Font = new Font("Segoe UI", 15F);
+            txtNombre.Location = new Point(347, 117);
+            txtNombre.Margin = new Padding(3, 4, 3, 4);
+            txtNombre.Name = "txtNombre";
+            txtNombre.Size = new Size(267, 41);
+            txtNombre.TabIndex = 6;
+            txtNombre.TextChanged += txtNombre_TextChanged;
+            // 
+            // lblBuscarNombre
+            // 
+            lblBuscarNombre.Anchor = AnchorStyles.None;
+            lblBuscarNombre.AutoSize = true;
+            lblBuscarNombre.BackColor = SystemColors.ActiveCaption;
+            lblBuscarNombre.Font = new Font("Segoe UI", 15F);
+            lblBuscarNombre.Location = new Point(73, 123);
+            lblBuscarNombre.Name = "lblBuscarNombre";
+            lblBuscarNombre.Size = new Size(239, 35);
+            lblBuscarNombre.TabIndex = 5;
+            lblBuscarNombre.Text = "Buscar por Nombre:";
+            // 
+            // btnActualizar
+            // 
+            btnActualizar.Anchor = AnchorStyles.None;
+            btnActualizar.BackColor = Color.FromArgb(192, 255, 192);
+            btnActualizar.Location = new Point(1488, 187);
+            btnActualizar.Margin = new Padding(3, 4, 3, 4);
+            btnActualizar.Name = "btnActualizar";
+            btnActualizar.Size = new Size(159, 48);
+            btnActualizar.TabIndex = 9;
+            btnActualizar.Text = "ACTUALIZAR";
+            btnActualizar.UseVisualStyleBackColor = false;
+            btnActualizar.Click += btnActualizar_Click;
+            // 
+            // label2
+            // 
+            label2.BackColor = SystemColors.ActiveCaption;
+            label2.Dock = DockStyle.Top;
+            label2.Location = new Point(0, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(1705, 492);
+            label2.TabIndex = 13;
+            label2.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.None;
+            button1.BackColor = Color.FromArgb(255, 255, 192);
+            button1.Location = new Point(1323, 187);
+            button1.Margin = new Padding(3, 4, 3, 4);
+            button1.Name = "button1";
+            button1.Size = new Size(159, 48);
+            button1.TabIndex = 14;
+            button1.Text = "HISTORIAL";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
+            // 
             // ApuntesTodos
             // 
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1303, 687);
+            ClientSize = new Size(1705, 971);
             Controls.Add(button1);
             Controls.Add(btnActualizar);
             Controls.Add(cmbTrabajo);
@@ -240,8 +267,11 @@
             Controls.Add(lblBuscarNombre);
             Controls.Add(gridApuntes);
             Controls.Add(label2);
+            Margin = new Padding(3, 4, 3, 4);
             Name = "ApuntesTodos";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Apuntes Todos    v1.0.0";
+            WindowState = FormWindowState.Maximized;
             Load += ApuntesTodos_Load;
             ((System.ComponentModel.ISupportInitialize)gridApuntes).EndInit();
             ResumeLayout(false);
@@ -263,8 +293,9 @@
         private DataGridViewTextBoxColumn NombreCompleto;
         private DataGridViewTextBoxColumn IdEmpleado;
         private DataGridViewTextBoxColumn LugarTrabajo;
-        private DataGridViewTextBoxColumn Zarcereño;
+        private DataGridViewTextBoxColumn DetallesSouvenir;
         private DataGridViewTextBoxColumn Souvenir;
+        private DataGridViewTextBoxColumn Zarcereño;
         private DataGridViewTextBoxColumn Restaurante;
         private DataGridViewTextBoxColumn Total;
     }

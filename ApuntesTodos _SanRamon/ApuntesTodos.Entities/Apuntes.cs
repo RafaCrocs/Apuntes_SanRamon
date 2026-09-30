@@ -9,5 +9,6 @@
         public int Souvenir { get; set; }
         public int Restaurante { get; set; }
         public int Total { get; set; }
+        public string DetallesSouvenir { get; set; }
     }
 }

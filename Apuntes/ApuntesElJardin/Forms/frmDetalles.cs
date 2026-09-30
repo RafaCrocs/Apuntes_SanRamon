@@ -10,6 +10,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Windows.Resources;
+using ApuntesEmpleados.Utils;
 
 namespace ApuntesElJardin.Forms
 {
@@ -51,6 +52,10 @@ namespace ApuntesElJardin.Forms
         {
             CargarDatos();
             CargarGrid();
+            if(AppConfig.Instance.Origen != "Souvenir")
+            {
+                gridDetalles.Columns["Pagar"].Visible = false;
+            }
             gridDetalles.RowsDefaultCellStyle.BackColor = Color.LightBlue;
             gridDetalles.AlternatingRowsDefaultCellStyle.BackColor = Color.White;
             gridDetalles.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;

@@ -17,4 +17,10 @@
     <ProjectReference Include="..\ApuntesTodos.Entities\ApuntesTodos.Entities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="ConfigurationFile.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

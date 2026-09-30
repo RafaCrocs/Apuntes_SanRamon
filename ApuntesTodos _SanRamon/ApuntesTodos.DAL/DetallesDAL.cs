@@ -44,31 +44,36 @@ namespace ApuntesTodos.DAL
             return lista;
         }
 
-        public bool PagarApunte(int idApunte, string Origen, out string mensaje)
+        public bool PagarApunte(int idApunte, out string mensaje)
         {
             bool resultado = false;
             mensaje = string.Empty;
 
-            using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
+            try
             {
-                conn.Open();
-                using (SqlCommand cmd = new SqlCommand("SP_PagarApunte", conn))
+                using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
                 {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    conn.Open();
+                    using (SqlCommand cmd = new SqlCommand("SP_PagarApunte", conn))
+                    {
+                        cmd.CommandType = System.Data.CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdApunte", idApunte);
-                    cmd.Parameters.AddWithValue("@Origen", Origen);
-                    cmd.Parameters.AddWithValue("@SePagoEn", "Salario");
+                        cmd.Parameters.AddWithValue("@IdApunte", idApunte);
+                        cmd.Parameters.AddWithValue("@SePagoEn", "Salario");
 
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
+                        cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
 
-                    cmd.ExecuteNonQuery();
+                        cmd.ExecuteNonQuery();
 
-                    resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
-
+                        resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+                        mensaje = cmd.Parameters["@Mensaje"].Value.ToString()!;
+                    }
                 }
+            }
+            catch (SqlException ex)
+            {
+                mensaje = "Error al pagar el apunte: " + ex.Message;
             }
             return resultado;
         }

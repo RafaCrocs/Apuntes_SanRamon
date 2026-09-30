@@ -90,17 +90,19 @@ namespace ApuntesEmpleados.DAL.BD
             mensaje = string.Empty;
             using (SqlConnection conn = new SqlConnection(Conexion.Cadena))
             {
-                using (SqlCommand cmd = new SqlCommand("SP_PagarTodo", conn))
+                using (SqlCommand cmd = new SqlCommand("SP_PagarTodoPorOrigen", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@IdEmpleado", idEmpleado);
+                    cmd.Parameters.AddWithValue("@Origen", origen);
                     cmd.Parameters.AddWithValue("@SePagoEn", origen);
                     cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 200).Direction = ParameterDirection.Output;
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
                     try
                     {
                         conn.Open();
-                        resultado = cmd.ExecuteNonQuery() > 0;
+                        cmd.ExecuteNonQuery();
+                        resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
                         mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
                     }
                     catch (Exception ex)

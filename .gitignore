@@ -427,3 +427,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Configuracion local con cadenas de conexion y contrasenas (ver ConfigurationFile.example.json)
+ConfigurationFile.json

@@ -44,7 +44,10 @@ namespace ApuntesTodos
 
         private void CargarCombo()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Souvenir", "MiniMarket", "Restaurante", "Heladeria" };
+            // Solo los origenes que tiene este colaborador
+            List<string> origenes = new List<string> { "" };
+            origenes.AddRange(listaDetalles.Select(d => d.Origen).Distinct().OrderBy(o => o));
+            cmbTrabajo.DataSource = origenes;
         }
 
         private void cmbTrabajo_SelectedIndexChanged(object sender, EventArgs e)
@@ -72,8 +75,7 @@ namespace ApuntesTodos
             if(gridDetalles.Columns[e.ColumnIndex].Name == "Pagar")
             {
                 int idApunte = Convert.ToInt32(gridDetalles.Rows[e.RowIndex].Cells["IdApunte"].Value);
-                string origen = gridDetalles.Rows[e.RowIndex].Cells["Origen"].Value.ToString()!;
-                bool resultado = detallesBL.PagarApunte(idApunte, origen, out string mensaje);
+                bool resultado = detallesBL.PagarApunte(idApunte, out string mensaje);
                 if (resultado)
                 {
                     MessageBox.Show(mensaje);

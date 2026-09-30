@@ -12,9 +12,9 @@ namespace ApuntesTodos.BL
             return detallesDAL.Detalles_ObtenerPorEmpleado(idEmpleado);
         }
 
-        public bool PagarApunte(int idApunte, string Origen, out string mensaje)
+        public bool PagarApunte(int idApunte, out string mensaje)
         {
-            return detallesDAL.PagarApunte(idApunte, Origen, out mensaje);
+            return detallesDAL.PagarApunte(idApunte, out mensaje);
         }
     }
 }

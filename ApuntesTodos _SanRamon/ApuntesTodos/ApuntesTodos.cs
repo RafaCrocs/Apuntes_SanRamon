@@ -8,9 +8,12 @@ namespace ApuntesTodos
         public ApuntesTodos()
         {
             InitializeComponent();
+            // Las columnas ya estan definidas en el diseñador; sin esto el grid las reordena segun las propiedades de la entidad
+            gridApuntes.AutoGenerateColumns = false;
         }
 
         private ApuntesBL apuntesBL = new ApuntesBL();
+        private LugaresTrabajoBL lugaresTrabajoBL = new LugaresTrabajoBL();
         private List<Apuntes> listaApuntes = new List<Apuntes>();
 
         private void CargarGrid()
@@ -20,7 +23,11 @@ namespace ApuntesTodos
         }
         private void CargarCombos()
         {
-            cmbTrabajo.DataSource = new List<String> { "", "Souvenir", "Zarcereño", "Restaurante"};
+            cmbTrabajo.DataSource = lugaresTrabajoBL.Lugares_ObtenerTodos(out string mensaje);
+            if (!string.IsNullOrEmpty(mensaje))
+            {
+                MessageBox.Show(mensaje, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ApuntesTodos_Load(object sender, EventArgs e)
@@ -34,7 +41,7 @@ namespace ApuntesTodos
 
         private void gridApuntes_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
-            if (gridApuntes.Columns[e.ColumnIndex].Name != "NombreCompleto" && gridApuntes.Columns[e.ColumnIndex].Name != "LugarTrabajo" && gridApuntes.Columns[e.ColumnIndex].Name != "Pagado" && gridApuntes.Columns[e.ColumnIndex].Name != "Detalles")
+            if (gridApuntes.Columns[e.ColumnIndex].Name != "NombreCompleto" && gridApuntes.Columns[e.ColumnIndex].Name != "LugarTrabajo" && gridApuntes.Columns[e.ColumnIndex].Name != "Pagado" && gridApuntes.Columns[e.ColumnIndex].Name != "Detalles" && gridApuntes.Columns[e.ColumnIndex].Name != "DetallesSouvenir")
             {
                 decimal valor = Convert.ToDecimal(e.Value);
                 e.Value = valor.ToString("C0", new System.Globalization.CultureInfo("es-CR"));

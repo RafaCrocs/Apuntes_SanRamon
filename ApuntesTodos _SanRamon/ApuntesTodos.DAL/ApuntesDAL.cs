@@ -28,7 +28,8 @@ namespace ApuntesTodos.DAL
                                 Zarcereño = Convert.ToInt32(reader["Zarcereño"]),
                                 Souvenir = Convert.ToInt32(reader["Souvenir"]),
                                 Restaurante = Convert.ToInt32(reader["Restaurante"]),
-                                Total = Convert.ToInt32(reader["Total"])
+                                Total = Convert.ToInt32(reader["Total"]),
+                                DetallesSouvenir = reader["DetallesSouvenir"] == DBNull.Value ? "" : reader["DetallesSouvenir"].ToString()!
                             };
                             apuntes.Add(apunte);
                         }

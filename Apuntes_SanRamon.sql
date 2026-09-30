@@ -1,9 +1,26 @@
-create database Apuntes_SanRamon3;
+-- =============================================
+-- Apuntes San Ramon
+-- Script re-ejecutable: crea lo que falte y actualiza
+-- procedimientos y vistas (create or alter).
+-- =============================================
+
+if db_id('Apuntes_SanRamon4') is null
+	create database Apuntes_SanRamon4;
 go
 
-use Apuntes_SanRamon3;
+use Apuntes_SanRamon4;
 go
 
+-- Los procedimientos guardan estas opciones al crearse; SP_ObtenerApuntesTodos las necesita (usa XML)
+set ansi_nulls on;
+set quoted_identifier on;
+go
+
+-- =============================================
+-- Tablas
+-- =============================================
+
+if object_id('Empleados', 'U') is null
 create table Empleados (
 	IdEmpleado int identity(1,1) primary key,
 	NombreCompleto nvarchar(255) not null,
@@ -11,6 +28,7 @@ create table Empleados (
 );
 go
 
+if object_id('Apuntes', 'U') is null
 create table Apuntes (
 	IdApunte int identity(1,1) primary key,
 	IdEmpleado int not null,
@@ -19,11 +37,11 @@ create table Apuntes (
 	Origen nvarchar(50) not null,
 	Fecha datetime not null default getdate(),
 
-	Constraint FK_Empleados_Apuntes foreign key (IdEmpleado) references Empleados(IdEmpleado),
-	Constraint CHK_Origen_Apuntes check (Origen in ('Zarcereño', 'Restaurante', 'Souvenir'))
+	Constraint FK_Empleados_Apuntes foreign key (IdEmpleado) references Empleados(IdEmpleado)
 );
 go
 
+if object_id('HistorialPagos', 'U') is null
 create table HistorialPagos (
 	IdHistorialPago int identity(1,1) primary key,
 	IdEmpleado int not null,
@@ -32,26 +50,47 @@ create table HistorialPagos (
 	Origen nvarchar(50) not null,
 	SePagoEn nvarchar(255) not null,
 	FechaPago datetime not null default getdate(),
+	FechaApunte datetime not null default getdate(),
 
-	Constraint FK_Empleados_Pagos foreign key (IdEmpleado) references Empleados(IdEmpleado),
-	Constraint CHK_Origen_Pagos check (Origen in ('Zarcereño', 'Restaurante', 'Souvenir'))
+	Constraint FK_Empleados_Pagos foreign key (IdEmpleado) references Empleados(IdEmpleado)
 );
 go
 
-
-
+if object_id('LugaresTrabajo', 'U') is null
 create table LugaresTrabajo (
 	IdLugarTrabajo int primary key identity(1,1),
 	NombreLugarTrabajo nvarchar(255) not null
 );
-
-insert into LugaresTrabajo (NombreLugarTrabajo) values
-(''),
-('Zarcereño'),
-('Restaurante'),
-('Souvenir'),
-('Finca');
 go
+
+if not exists (select 1 from LugaresTrabajo)
+insert into LugaresTrabajo (NombreLugarTrabajo) values
+(N''),
+(N'Zarcereño'),
+(N'Restaurante'),
+(N'Souvenir'),
+(N'Finca');
+go
+
+-- =============================================
+-- Actualizaciones para bases creadas con versiones anteriores del script
+-- =============================================
+
+-- Se quitan las restricciones de Origen para permitir nuevos puntos de venta
+if object_id('CHK_Origen_Apuntes', 'C') is not null
+	alter table Apuntes drop constraint CHK_Origen_Apuntes;
+if object_id('CHK_Origen_Pagos', 'C') is not null
+	alter table HistorialPagos drop constraint CHK_Origen_Pagos;
+go
+
+-- Fecha en que se hizo el apunte, se guarda al pagarlo
+if col_length('HistorialPagos', 'FechaApunte') is null
+	alter table HistorialPagos add FechaApunte datetime not null default getdate();
+go
+
+-- =============================================
+-- Empleados y lugares de trabajo
+-- =============================================
 
 create or alter procedure SP_ObtenerLugaresTrabajo
 as
@@ -81,6 +120,10 @@ begin
 	set @Mensaje = 'Colaborador insertado correctamente.';
 end
 go
+
+-- =============================================
+-- Apuntes por punto de venta (proyecto Apuntes)
+-- =============================================
 
 --Registrar Apunte
 create or alter procedure SP_InsertarApunte
@@ -156,7 +199,6 @@ create or alter procedure SP_PagarApunte
 as
 begin
 	begin try
-
 		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen, FechaApunte)
 		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen, Fecha
 		from Apuntes
@@ -164,7 +206,6 @@ begin
 
 		delete from Apuntes
 		where IdApunte = @IdApunte;
-
 
 		set @Resultado = 1;
 		set @Mensaje = 'Apunte pagado correctamente.';
@@ -176,32 +217,40 @@ begin
 end
 go
 
--- Pagar Todo
-create or alter procedure SP_PagarTodo
+-- Pagar Todo: solo los apuntes del punto de venta que paga (@Origen)
+-- La transaccion y los bloqueos evitan borrar un apunte que se agregue mientras se paga sin pasarlo al historial.
+create or alter procedure SP_PagarTodoPorOrigen
 	@IdEmpleado int,
+	@Origen nvarchar(50),
 	@SePagoEn nvarchar(255),
 	@Resultado bit output,
 	@Mensaje nvarchar(255) output
 as
 begin
 	begin try
+		begin tran;
+
 		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen, FechaApunte)
 		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen, Fecha
-		from Apuntes
-		where IdEmpleado = @IdEmpleado;
+		from Apuntes with (updlock, holdlock)
+		where IdEmpleado = @IdEmpleado and Origen = @Origen;
 
 		delete from Apuntes
-		where IdEmpleado = @IdEmpleado;
+		where IdEmpleado = @IdEmpleado and Origen = @Origen;
+
+		commit;
 
 		set @Resultado = 1;
-		set @Mensaje = 'Todos los apuntes pagados correctamente.';
+		set @Mensaje = 'Apuntes de ' + @Origen + ' pagados correctamente.';
 	end try
 	begin catch
+		if @@trancount > 0 rollback;
 		set @Resultado = 0;
 		set @Mensaje = 'Error al pagar los apuntes: ' + ERROR_MESSAGE();
 	end catch
 end
 go
+
 -- Historial de pagos por origen
 create or alter procedure SP_HistorialPagosPorOrigen
 	@Origen nvarchar(50)
@@ -214,37 +263,52 @@ begin
 		hp.Detalle,
 		hp.Origen,
 		hp.SePagoEn,
-		hp.FechaPago
+		hp.FechaPago,
+		hp.FechaApunte
 	from HistorialPagos hp
 	inner join Empleados e on hp.IdEmpleado = e.IdEmpleado
 	where hp.Origen = @Origen
+	order by hp.IdHistorialPago desc
 end
 go
 
---Obtener todos los Apuntes para Admin
+-- =============================================
+-- Administracion (proyecto ApuntesTodos)
+-- =============================================
+
+-- Obtener todos los Apuntes para Admin
+-- Total no incluye Souvenir porque se rebaja por aparte.
+-- DetallesSouvenir: un renglon "Detalle - Monto" por cada apunte de Souvenir.
 create or alter procedure SP_ObtenerApuntesTodos
-AS
-BEGIN
+as
+begin
 	select
 		e.IdEmpleado,
 		e.NombreCompleto,
 		e.LugarTrabajo,
-		SUM(CASE WHEN a.Origen = 'Zarcereño' THEN a.Monto ELSE 0 END) AS Zarcereño,
-		SUM(CASE WHEN a.Origen = 'Souvenir' THEN a.Monto ELSE 0 END) AS Souvenir,
-		SUM(CASE WHEN a.Origen = 'Restaurante' THEN a.Monto ELSE 0 END) AS Restaurante,
-		SUM(a.Monto) AS Total
+		SUM(CASE WHEN a.Origen = N'Souvenir' THEN a.Monto ELSE 0 END) AS Souvenir,
+		SUM(CASE WHEN a.Origen = N'Zarcereño' THEN a.Monto ELSE 0 END) AS Zarcereño,
+		SUM(CASE WHEN a.Origen = N'Restaurante' THEN a.Monto ELSE 0 END) AS Restaurante,
+		SUM(a.Monto) - SUM(CASE WHEN a.Origen = N'Souvenir' THEN a.Monto ELSE 0 END) AS Total,
+		STUFF((
+			select CHAR(13) + CHAR(10) + s.Detalle + N' - ' + FORMAT(s.Monto, 'C0', 'es-CR')
+			from Apuntes s
+			where s.IdEmpleado = e.IdEmpleado and s.Origen = N'Souvenir'
+			order by s.Fecha
+			for xml path(''), type
+		).value('.', 'nvarchar(max)'), 1, 2, N'') AS DetallesSouvenir
 	from Empleados e
 	left join Apuntes a on e.IdEmpleado = a.IdEmpleado
 	where a.IdApunte is not null
 	group by e.NombreCompleto, e.LugarTrabajo, e.IdEmpleado;
-END;
-GO
+end;
+go
 
 -- Ver Detalles de Apuntes para Admin
 create or alter procedure SP_DetalleApuntesTodos
 	@IdEmpleado int
-AS
-BEGIN
+as
+begin
 	select
 		a.IdApunte,
 		e.NombreCompleto,
@@ -256,21 +320,7 @@ BEGIN
 	from Apuntes a
 	inner join Empleados e on a.IdEmpleado = e.IdEmpleado
 	where a.IdEmpleado = @IdEmpleado
-END;
-go
--- Ver Historial Pagos Todos
-create view VW_VerHistorialPagosTodos
-AS
-select
-	hp.IdHistorialPago,
-	e.NombreCompleto,
-	hp.Monto,
-	hp.Detalle,
-	hp.Origen,
-	hp.SePagoEn,
-	hp.FechaPago
-from HistorialPagos hp
-inner join Empleados e on hp.IdEmpleado = e.IdEmpleado
+end;
 go
 
 -- Pagar Todo en Salario
@@ -282,12 +332,14 @@ create or alter procedure SP_PagarTodoSalario
 as
 begin
 	begin try
-		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen)
-		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen
+		insert into HistorialPagos (IdEmpleado, Monto, Detalle, SePagoEn, Origen, FechaApunte)
+		select IdEmpleado, Monto, Detalle, @SePagoEn, Origen, Fecha
 		from Apuntes
 		where IdEmpleado = @IdEmpleado;
+
 		delete from Apuntes
 		where IdEmpleado = @IdEmpleado;
+
 		set @Resultado = 1;
 		set @Mensaje = 'Todos los apuntes pagados correctamente en salario.';
 	end try
@@ -296,8 +348,43 @@ begin
 		set @Mensaje = 'Error al pagar los apuntes: ' + ERROR_MESSAGE();
 	end catch
 end
+go
 
+-- Historial de pagos entre dos fechas (incluye ambos dias completos)
+create or alter procedure sp_BuscarEntreFechas
+	@FechaInicio datetime,
+	@FechaFin datetime
+as
+begin
+	select
+		hp.IdHistorialPago,
+		e.NombreCompleto,
+		hp.Monto,
+		hp.Detalle,
+		hp.Origen,
+		hp.SePagoEn,
+		hp.FechaPago,
+		hp.FechaApunte
+	from HistorialPagos hp
+	inner join Empleados e on hp.IdEmpleado = e.IdEmpleado
+	where hp.FechaPago >= cast(@FechaInicio as date)
+		and hp.FechaPago < dateadd(day, 1, cast(@FechaFin as date))
+	order by hp.FechaPago desc
+end
+go
 
--- Actualizaciones
-alter table Apuntes drop CONSTRAINT CHK_Origen_Apuntes
-alter table HistorialPagos drop CONSTRAINT CHK_Origen_Pagos
+-- Ver Historial Pagos Todos
+create or alter view VW_VerHistorialPagosTodos
+as
+select
+	hp.IdHistorialPago,
+	e.NombreCompleto,
+	hp.Monto,
+	hp.Detalle,
+	hp.Origen,
+	hp.SePagoEn,
+	hp.FechaPago,
+	hp.FechaApunte
+from HistorialPagos hp
+inner join Empleados e on hp.IdEmpleado = e.IdEmpleado
+go

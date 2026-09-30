@@ -60,7 +60,7 @@ namespace ApuntesTodos.DAL
                         {
                             Historial pago = new Historial()
                             {
-                                IdHistorialPago = Convert.ToInt32(dr["IdPago"]),
+                                IdHistorialPago = Convert.ToInt32(dr["IdHistorialPago"]),
                                 NombreCompleto = dr["NombreCompleto"].ToString(),
                                 Monto = Convert.ToInt32(dr["Monto"]),
                                 Detalle = dr["Detalle"].ToString(),

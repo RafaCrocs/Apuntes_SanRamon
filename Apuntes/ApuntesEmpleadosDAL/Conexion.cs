@@ -7,6 +7,6 @@ namespace ApuntesEmpleados.DAL
 {
     public class Conexion
     {
-        public static string Cadena = AppConfig.Instance.CadenaConexion;
+        public static string Cadena = AppConfig.Instance.CadenaConexionLocal;
     }
 }

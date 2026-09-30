@@ -8,7 +8,7 @@ namespace ApuntesEmpleados.Utils
     public class AppConfig
     {
         public string Origen { get; set; } = "Sin Origen";
-        public string CadenaConexion { get; set; } = "Sin cadena de conexion a base de datos";
+        public string CadenaConexionLocal { get; set; } = "Sin cadena de conexion a base de datos";
 
         private static AppConfig _instance;
 
